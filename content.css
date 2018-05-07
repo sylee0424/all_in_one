@@ -1,0 +1,25 @@
+﻿.__link {color:#aa8888;}
+.__folder {color:#88aaaa;}
+.__checked {background-color:#2f2f2f;}
+.__extension {word-wrap:break-word; line-height:10px; vertical-align: middle; box-sizing:border-box; z-index:11; border-width:1px; border-style:solid; border-color:#000000; background-color:#ffffff; font-size:10px;}
+.__disabled {filter:invert(100%);}
+.__buttons.__extension {width:20px; height:20px; display:inline-block; font-size:10px;}
+.__input {display:inline-block; width:10px; height:10px; border:1px solid #000000;}
+.__hided {display:none !important; }
+.__loadedimg {width:500px;}
+.__invisibled {visibility:hidden; !important;}
+.__innerimage {width:100%; height:100%;}
+.__abtn {display:inline-block; width:11.11%; height:40px;}
+.__btnz {width:35px; height:35px;}
+label.__extension {width:70px; height:20px; display:inline-block;}
+#dir.__extension {height:20px;}
+#pastebmk {position:absolute; bottom:0px; left:0px; width:100px; height:25px;}
+#functionbar {position:fixed; top:0px; left:0px; width:40px; height:calc(100% - 40px); z-index:9997; overflow-x:hidden; overflow-y:auto;}
+#bmkmain {position:fixed; top:20px; left:20px; width:320px; height:500px; z-index:9999; overflow:auto; max-width:calc(100% - 40px); max-height:calc(100% - 40px);}
+#bmkmain.__expanded {width:calc(100% - 40px); height:calc(100% - 40px);}
+#bmks.__copyactive {height:calc(100% - 130px);}
+#bmks {height:calc(100% - 100px); overflow:auto; font-size:15px; line-height:20px;}
+#bmkmain label {display:inline-block; border:1px solid #000000; margin-bottom:10px; min-width:90px;}
+#setover {z-index:12;}
+#actionbar {position:fixed; bottom:0px; left:0px; width:100%; height:40px;}
+#sidebarpad {z-index:0; position:absolute; bottom:0px; left:0px; width:38px; height:40px;}
