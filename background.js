@@ -22,14 +22,12 @@
 			break;
 		case "cookie":
 			extension.cookies.set({
-				domain: message.domain,
 				url: message.href,
 				name: "ipb_member_id",
 				value: "2103916",
 				path: "/"
 			});
 			extension.cookies.set({
-				domain: message.domain,
 				url: message.href,
 				name: "ipb_pass_hash",
 				value: "899130e578b9bc79ff6727303139c0a6",
