@@ -585,7 +585,7 @@ window.Extension_Tool_Functions = {
 		name: "Emulate_Click_Event"
 	},
 
-	Get_Chils_Index: {
+	Get_Childs_Index: {
 		f: function(node) {
 			return Array.prototype.indexOf.call(node.parentNode.childNodes, node);
 		},
@@ -664,16 +664,17 @@ window.Extension_Tool_Functions = {
 			var eventx = event.clientX || event.changedTouches[0].clientX;
 			var eventy = event.clientY || event.changedTouches[0].clientY;
 			var nds = document.createElement("div");
+			var id = window.setTimeout(Extension_Tool_Functions.Longtab_Event_Checker.f, 350);
 			nds.setAttribute("style",
 				"visibility:visible; position:fixed; bottom:0%; left:0%; width:100%; height:100%; background-color:#000000; opacity:0;"
 			);
 			nds.id = "setover";
-			nds.setAttribute("data-x", eventx);
-			nds.setAttribute("data-y", eventy);
-			nds.setAttribute("data-id", this.id);
+			nds.dataset.x = eventx;
+			nds.dataset.y = eventy;
+			nds.dataset.id = this.id;
+			nds.dataset.timeout = id;
 			document.body.appendChild(nds);
 			nds.addEventListener("mouseup", Extension_Tool_Functions.Drag_Event_Checker_Action.f);
-			window.setTimeout(Extension_Tool_Functions.Longtab_Event_Checker.f, 350);
 		},
 		name: "Drag_Event_Checker"
 	},
@@ -683,6 +684,7 @@ window.Extension_Tool_Functions = {
 			if (document.getElementById("setover")) {
 				document.getElementById("setover").parentNode.removeChild(document.getElementById("setover"));
 			}
+			window.clearTimeout(Number(document.getElementById("setover").dataset.timeout));
 		},
 		name: "Drag_Event_Checker"
 	},
@@ -954,9 +956,9 @@ window.Extension_User_Functions = {
 				}
 			}
 			if (aq) {
-				return Extension_Tool_Functions.Get_Chils_Index.f(aq[aq.length - 1]);
+				return Extension_Tool_Functions.Get_Childs_Index.f(aq[aq.length - 1]);
 			} else {
-				return Extension_Tool_Functions.Get_Chils_Index.f(element);
+				return Extension_Tool_Functions.Get_Childs_Index.f(element);
 			}
 		},
 		name: "ttp://_Make_Link",
@@ -1134,7 +1136,7 @@ window.Extension_User_Functions = {
 			for (i = 0; i < element.childNodes.length; i++) {
 				i = Extension_User_Functions.fde.f(element.childNodes[i]);
 			}
-			return Extension_Tool_Functions.Get_Chils_Index.f(element);
+			return Extension_Tool_Functions.Get_Childs_Index.f(element);
 		},
 		name: "Force_Drag_Enable"
 	}

