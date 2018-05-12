@@ -561,6 +561,21 @@ window.Extension_Variables = {
 	},
 	{
 		tag: "div",
+		name: "toggle bmktool",
+		image: dataurls.bmktool,
+		classname: ["__buttons","__inedit"],
+		events: [{
+			name: "click",
+			value: function () {
+				var a = document.querySelectorAll(".__bmktool");
+				a.forEach(function (val) {
+					val.classList.toggle("__hided");
+				});
+			}
+		}]
+	},
+	{
+		tag: "div",
 		name: "add bmk",
 		image: dataurls.add,
 		classname: ["__buttons","__inedit"],
@@ -644,58 +659,6 @@ window.Extension_Variables = {
 		classname:["__extension"]
 	},
 	{
-		tag: "div",
-		name: "import",
-		image: dataurls["import"],
-		classname: ["__buttons"],
-		events: [{
-			name: "click",
-			value: Bookmark_User_Functions.Import_Bookmark.f
-		}]
-	},
-	{
-		tag: "div",
-		name: "export",
-		image: dataurls["export"],
-		classname: ["__buttons"],
-		events: [{
-			name: "click",
-			value: Bookmark_User_Functions.Export_Bookmark.f
-		}]
-	},
-	{
-		tag: "div",
-		name: "backup",
-		image: dataurls.backup,
-		classname: ["__buttons"],
-		events: [{
-			name: "click",
-			value: Bookmark_User_Functions.Backup_Bookmark.f
-		}]
-	},
-	{
-		tag: "div",
-		name: "merge",
-		image: dataurls.merge,
-		classname: ["__buttons"],
-		events: [{
-			name: "click",
-			value: Bookmark_User_Functions.Merge_Bookmark.f
-		}]
-	},
-	{
-		tag: "div",
-		name: "expand",
-		image: dataurls.expand,
-		classname: ["__buttons"],
-		events: [{
-			name: "click",
-			value: function (event) {
-				document.getElementById("bmkmain").classList.toggle("__expanded");
-			}
-		}]
-	},
-	{
 		tag: "input",
 		id: "getbmk",
 		classname: ["__hided"],
@@ -761,6 +724,58 @@ window.Extension_Variables = {
 			value: Bookmark_User_Functions.Deactivate_Bookmark_Edit.f
 		}],
 		classname: ["__invisibled","__buttons","__editout"]
+	},
+	{
+		tag: "div",
+		name: "import",
+		image: dataurls["import"],
+		classname: ["__buttons","__bmktool","__hided"],
+		events: [{
+			name: "click",
+			value: Bookmark_User_Functions.Import_Bookmark.f
+		}]
+	},
+	{
+		tag: "div",
+		name: "export",
+		image: dataurls["export"],
+		classname: ["__buttons","__bmktool","__hided"],
+		events: [{
+			name: "click",
+			value: Bookmark_User_Functions.Export_Bookmark.f
+		}]
+	},
+	{
+		tag: "div",
+		name: "backup",
+		image: dataurls.backup,
+		classname: ["__buttons","__bmktool","__hided"],
+		events: [{
+			name: "click",
+			value: Bookmark_User_Functions.Backup_Bookmark.f
+		}]
+	},
+	{
+		tag: "div",
+		name: "merge",
+		image: dataurls.merge,
+		classname: ["__buttons","__bmktool","__hided"],
+		events: [{
+			name: "click",
+			value: Bookmark_User_Functions.Merge_Bookmark.f
+		}]
+	},
+	{
+		tag: "div",
+		name: "expand",
+		image: dataurls.expand,
+		classname: ["__buttons","__bmktool","__hided"],
+		events: [{
+			name: "click",
+			value: function (event) {
+				document.getElementById("bmkmain").classList.toggle("__expanded");
+			}
+		}]
 	},
 	{
 		tag: "div",
@@ -1147,7 +1162,7 @@ window.keyboardaction = function (event) {
 	}
 }
 
-window.dialog = async function (option={}) {
+window.dialog = function (option={}) {
 	if (option.title) {
 		document.querySelector("#modaltitle").innerText=option.title;
 	}
@@ -1169,17 +1184,13 @@ window.dialog = async function (option={}) {
 	}
 	modal.style.display = "block";
 	document.querySelector("#modalinput").focus();
-	var ret=getinput();
-	console.log(ret);
-	return await ret;
-}
-
-function getinput() { 
-	return new Promise(function (a,b) {
+	var ret = new Promise(function (a,b) {
 		var c=document.querySelector("#modalinput");
 		c.addEventListener("modalcomplete",()=>a(c.value));
 		c.addEventListener("modalcancel",()=>b(null));
 	});
+	console.log(ret);
+	return ret;
 }
 
 window.addEventListener("keydown",keyboardaction);
