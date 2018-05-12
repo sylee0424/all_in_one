@@ -851,9 +851,9 @@ window.Extension_Tool_Functions = {
 	Fake_Scroll_Action: {
 		f: function() {
 			if (Extension_Variables.Fake_Scroll_Direction == "u") {
-				document.documentElement.scrollTop -= 60;
+				document.documentElement.scrollTop -= 80;
 			} else if (Extension_Variables.Fake_Scroll_Direction == "d") {
-				document.documentElement.scrollTop += 60;
+				document.documentElement.scrollTop += 80;
 			}
 		},
 		name: "Set_Scroll"

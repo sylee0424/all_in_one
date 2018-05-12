@@ -40,6 +40,9 @@ if (document.querySelector("meta[name=viewport]")) {
 }
 
 window.addEventListener("message",Extension_Tool_Functions.On_Message.f);
+window.addEventListener("mouseup",Extension_Tool_Functions.Fake_Scroll_Event_End.f);
+window.addEventListener("mousedown",Extension_Tool_Functions.Fake_Scroll_Event.f);
+var aaaa = window.setInterval(Extension_Tool_Functions.Fake_Scroll_Action.f,40);
 
 document.onmousedown=function () {};
 document.body.oncontextmenu="";
