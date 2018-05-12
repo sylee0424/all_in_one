@@ -681,18 +681,6 @@ window.Extension_Variables = {
 		}]
 	},
 	{
-		tag: "div",
-		name: "expand",
-		image: dataurls.expand,
-		classname: ["__buttons"],
-		events: [{
-			name: "click",
-			value: function (event) {
-				document.getElementById("bmkmain").classList.toggle("__expanded");
-			}
-		}]
-	},
-	{
 		tag: "input",
 		id: "getbmk",
 		classname: ["__hided"],

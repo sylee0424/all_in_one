@@ -118,6 +118,12 @@ window.Extension_Tool_Functions = {
 					name: "src",
 					value: item.image
 				}];
+				if (item.name) {
+					b.attributes.push({
+						name: "title",
+						value: item.name
+					});
+				}
 				b.classname = ["__innerimage","__extension"];
 				item.childs.push(b);
 			} else if (item.name) {
