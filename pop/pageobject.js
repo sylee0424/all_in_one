@@ -548,6 +548,35 @@ window.Bookmark_User_Functions = {
 
 }
 
+window.addall = function () {
+	convertCF(this,extension.tabs.query,function (a){
+		a.forEach(function (val) {
+			val.type="link";
+		});
+		Storage_Action({
+			type:"add",
+			loc:"temp",
+			data:a
+		});
+	},{});
+}
+
+window.openall = function () {
+	var bmkptr=Extension_Variables.Bookmark_Original.value.temp.value;
+	var list=Object.keys(bmkptr);
+	list.forEach(function (val) {
+		var a={};
+		a.url=bmkptr[val].value;
+		a.active=false;
+		extension.tabs.create(a);
+	});
+	Storage_Action({
+		type:"remove",
+		loc:"temp",
+		data:list
+	});
+}
+
 window.Extension_Variables = {
 	Bookmark_Interface_List: [{
 		tag: "div",
@@ -613,6 +642,26 @@ window.Extension_Variables = {
 		events: [{
 			name: "click",
 			value: Bookmark_User_Functions.Go_To_Upper_Bookmark_Folder.f
+		}]
+	},
+	{
+		tag: "div",
+		name: "addall",
+		image: dataurls.addall,
+		classname: ["__buttons","__inedit"],
+		events: [{
+			name: "click",
+			value: addall
+		}]
+	},
+	{
+		tag: "div",
+		name: "openall",
+		image: dataurls.openall,
+		classname: ["__buttons","__inedit"],
+		events: [{
+			name: "click",
+			value: openall
 		}]
 	},
 	{
@@ -1049,35 +1098,6 @@ window.convertCF = function (thist,_function,callback,...argv) {
 	else {
 		_function.apply(thist,argv).then(callback);
 	}
-}
-
-window.addall = function () {
-	convertCF(this,extension.tabs.query,function (a){
-		a.forEach(function (val) {
-			val.type="link";
-		});
-		Storage_Action({
-			type:"add",
-			loc:"temp",
-			data:a
-		});
-	},{});
-}
-
-window.openall = function () {
-	var bmkptr=Extension_Variables.Bookmark_Original.value.temp.value;
-	var list=Object.keys(bmkptr);
-	list.forEach(function (val) {
-		var a={};
-		a.url=bmkptr[val].value;
-		a.active=false;
-		extension.tabs.create(a);
-	});
-	Storage_Action({
-		type:"remove",
-		loc:"temp",
-		data:list
-	});
 }
 
 window.getlocs = function (a,b) {
