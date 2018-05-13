@@ -864,6 +864,17 @@ window.Extension_Tool_Functions = {
 			event.stopPropagation();
 		},
 		name: "Cancel_Event_Bubling"
+	},
+	
+	testfunction : {
+		f: function () {
+			var a = document.querySelectorAll("p.mona span");
+			a.forEach(function (val) {
+				if (val.style.color=="white") {
+					val.style.color="#000000";
+				}
+			});
+		}
 	}
 };
 

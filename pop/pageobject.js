@@ -247,14 +247,14 @@ window.bufs = {
 				b.classList.add("__"+bmkptr.value[val].type);
 				b.id = val;
 				b.appendChild(document.createTextNode(val));
-				if (!bmkptr.value[val].data.croped) {
-					document.getElementById("bmks").appendChild(b);
-					document.getElementById("bmks").appendChild(document.createElement("br"));
-					b.addEventListener("mousedown", bufs.clickact.f);
-				}
+				document.getElementById("bmks").appendChild(b);
+				document.getElementById("bmks").appendChild(document.createElement("br"));
+				b.addEventListener("click", bufs.clickact.f);
+				b.addEventListener("contextmenu",(event)=>bufs.clickact.f.call(b,event));
 			});
 			a.scrollTop = e;
 			extension.storage.local.set({"loc":bmkpath});
+			return undefined;
 		},
 
 		name: "show"
@@ -1212,7 +1212,7 @@ window.dialog = function (option={}) {
 	var ret = new Promise(function (a,b) {
 		var c=document.querySelector("#modalinput");
 		c.addEventListener("modalcomplete",()=>a(c.value));
-		c.addEventListener("modalcancel",()=>b(null));
+		c.addEventListener("modalcancel",()=>a(null));
 	});
 	console.log(ret);
 	return ret;
