@@ -153,3 +153,9 @@ function notify(message) {
 		});
 	}
 }
+
+chrome.downloads.onCreated.addListener(function (a) {
+	if (a.finalUrl.match("bgms.kr")&&a.mime=="application/x-shockwave-flash") {
+		chrome.downloads.cancel(a.id);
+	}
+});
