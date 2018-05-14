@@ -1,4 +1,38 @@
-﻿window.Action_Bar_Function = {
+﻿Object.prototype.keys||Object.prototype.keys = function () {
+	var a=[];
+	for (var b in this) {
+		if (Object.prototype.hasOwnProperty.call(this,b)) {
+			a.push(b);
+		}
+	}
+	return a;
+}
+
+NodeList.prototype.forEach||NodeList.prototype.forEach = function (callback) {
+	for (var a=0;a<this.length;a++) {
+		callback(this[a],a,this);
+	}
+}
+
+NodeList.prototype.entries||NodeList.prototype.entries = function* () {
+	for (var a=0;a<this.length;a++) {
+		yield [a,this[a]];
+	}
+}
+
+NodeList.prototype.keys||NodeList.prototype.keys = function* () {
+	for (var a=0;a<this.length;a++) {
+		yield a;
+	}
+}
+
+NodeList.prototype.values||NodeList.prototype.values = function* () {
+	for (var a=0;a<this.length;a++) {
+		yield this[a];
+	}
+}
+
+window.Action_Bar_Function = {
 
 	Action_Bar_Function_1: {
 		f: function() {
