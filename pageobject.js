@@ -1,4 +1,4 @@
-﻿Object.prototype.keys||Object.prototype.keys = function () {
+Object.prototype.keys||(Object.prototype.keys = function () {
 	var a=[];
 	for (var b in this) {
 		if (Object.prototype.hasOwnProperty.call(this,b)) {
@@ -6,31 +6,31 @@
 		}
 	}
 	return a;
-}
+});
 
-NodeList.prototype.forEach||NodeList.prototype.forEach = function (callback) {
+NodeList.prototype.forEach||(NodeList.prototype.forEach = function (callback) {
 	for (var a=0;a<this.length;a++) {
 		callback(this[a],a,this);
 	}
-}
+});
 
-NodeList.prototype.entries||NodeList.prototype.entries = function* () {
+NodeList.prototype.entries||(NodeList.prototype.entries = function* () {
 	for (var a=0;a<this.length;a++) {
 		yield [a,this[a]];
 	}
-}
+});
 
-NodeList.prototype.keys||NodeList.prototype.keys = function* () {
+NodeList.prototype.keys||(NodeList.prototype.keys = function* () {
 	for (var a=0;a<this.length;a++) {
 		yield a;
 	}
-}
+});
 
-NodeList.prototype.values||NodeList.prototype.values = function* () {
+NodeList.prototype.values||(NodeList.prototype.values = function* () {
 	for (var a=0;a<this.length;a++) {
 		yield this[a];
 	}
-}
+});
 
 window.Action_Bar_Function = {
 
@@ -1108,7 +1108,7 @@ window.Extension_User_Functions = {
 				return undefined;
 			}
 			var target = galleryinfo.slice(num2,(num1==-1?undefined:num1));
-			var key=document.getElementsByTagName("img")[0].src.split(".hitomi.la/")[0].split("//")[1] + ".hitomi.la/galleries/";
+			var key=document.querySelector("div.img-url").innerText.split(".hitomi.la/")[0].split("//")[1] + ".hitomi.la/galleries/";
 			if (!confirm("download?")) {
 				document.getElementsByTagName("head")[0].innerHTML = "";
 				document.body.innerHTML = "";
