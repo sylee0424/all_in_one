@@ -1,3 +1,5 @@
+﻿/*
+
 Object.prototype.keys||(Object.prototype.keys = function () {
 	var a=[];
 	for (var b in this) {
@@ -31,6 +33,8 @@ NodeList.prototype.values||(NodeList.prototype.values = function* () {
 		yield this[a];
 	}
 });
+
+*/
 
 window.Action_Bar_Function = {
 
