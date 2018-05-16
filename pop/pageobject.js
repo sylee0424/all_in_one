@@ -282,14 +282,12 @@ window.bufs = {
 		f: async function(e) {
 			if (!document.getElementById("bmks").classList.contains("__editing") && e.which == 1) {
 				if (this.classList.contains("__link")) {
-					var a={};
-					a.url=this.dataset.src;
-					a.loc=Number(this.dataset.length);
-					a.active=!document.getElementById("bactab").classList.contains("__checked");
+					var a = {};
+					a.url = this.dataset.src;
+					var b = Number(this.dataset.length);
+					a.active = !document.getElementById("bactab").classList.contains("__checked");
 					if (document.getElementById("tab").classList.contains("__checked")) {
-						convertCF(this,extension.tabs.update,function (b) {
-							extension.tabs.executeScript({code:"document.documentElement.scrollTop="+a.loc})
-						},a);
+						extension.tabs.update(a);
 					} else {
 						extension.tabs.create(a);
 					}

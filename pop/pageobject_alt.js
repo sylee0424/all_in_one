@@ -1145,7 +1145,10 @@ window.keyboardaction = function (event) {
 	}
 }
 
-window.dialog = function (option={}) {
+window.dialog = function (option) {
+	if (!option) {
+		option = {};
+	}
 	if (option.value) {
 		return prompt(option.body,option.value);
 	}

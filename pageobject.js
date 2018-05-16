@@ -1,6 +1,6 @@
 ﻿/*
 
-Object.prototype.keys||(Object.prototype.keys = function () {
+Object.keys||(Object.prototype.keys = function () {
 	var a=[];
 	for (var b in this) {
 		if (Object.prototype.hasOwnProperty.call(this,b)) {
@@ -10,25 +10,25 @@ Object.prototype.keys||(Object.prototype.keys = function () {
 	return a;
 });
 
-NodeList.prototype.forEach||(NodeList.prototype.forEach = function (callback) {
+NodeList.forEach||(NodeList.prototype.forEach = function (callback) {
 	for (var a=0;a<this.length;a++) {
 		callback(this[a],a,this);
 	}
 });
 
-NodeList.prototype.entries||(NodeList.prototype.entries = function* () {
+NodeList.entries||(NodeList.prototype.entries = function* () {
 	for (var a=0;a<this.length;a++) {
 		yield [a,this[a]];
 	}
 });
 
-NodeList.prototype.keys||(NodeList.prototype.keys = function* () {
+NodeList.keys||(NodeList.prototype.keys = function* () {
 	for (var a=0;a<this.length;a++) {
 		yield a;
 	}
 });
 
-NodeList.prototype.values||(NodeList.prototype.values = function* () {
+NodeList.values||(NodeList.prototype.values = function* () {
 	for (var a=0;a<this.length;a++) {
 		yield this[a];
 	}
@@ -261,7 +261,7 @@ window.Extension_Sub_Functions = {
 			});
 			__scr.addEventListener("error",function () {
 				console.log(""+this.src);
-				this.src+="#"+new Date().getTime();
+				this.src=this.src.match(/([^\#]*)\#?/)[1] + "#"+new Date().getTime();
 			});
 			__scr.setAttribute("src",imagelist.shift());
 		},
@@ -1112,7 +1112,7 @@ window.Extension_User_Functions = {
 				return undefined;
 			}
 			var target = galleryinfo.slice(num2,(num1==-1?undefined:num1));
-			var key=document.querySelector("div.img-url").innerText.split(".hitomi.la/")[0].split("//")[1] + ".hitomi.la/galleries/";
+			var key=document.querySelector("div#comicImages img").src.match(/\/\/(.*?\.hitomi\.la\/)/) + "galleries/";
 			if (!confirm("download?")) {
 				document.getElementsByTagName("head")[0].innerHTML = "";
 				document.body.innerHTML = "";
