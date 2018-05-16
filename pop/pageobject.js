@@ -244,6 +244,7 @@ window.bufs = {
 				b.dataset.src = bmkptr.value[val].value;
 				b.dataset.loc = bmkpath;
 				b.dataset.index = index;
+				b.dataset.length = Number(bmkptr.value[val].data.scroll);
 				b.classList.add("__"+bmkptr.value[val].type);
 				b.id = val;
 				b.appendChild(document.createTextNode(val));
@@ -271,7 +272,7 @@ window.bufs = {
 					loc:document.getElementById("dir").dataset.loc,
 					data:a
 				});
-			},{code:"var a={}; a.title=document.title; a.url=location.href; a.type='link'; a;"});
+			},{code:"var a={}; a.title=document.title; a.url=location.href; a.type='link'; a.loc=document.documentElement.scrollTop; a;"});
 		},
 
 		name: "add"
@@ -283,9 +284,12 @@ window.bufs = {
 				if (this.classList.contains("__link")) {
 					var a={};
 					a.url=this.dataset.src;
+					a.loc=Number(this.dataset.length);
 					a.active=!document.getElementById("bactab").classList.contains("__checked");
 					if (document.getElementById("tab").classList.contains("__checked")) {
-						extension.tabs.update(a);
+						convertCF(this,extension.tabs.update,function (b) {
+							extension.tabs.executeScript({code:"document.documentElement.scrollTop="+a.loc})
+						},a);
 					} else {
 						extension.tabs.create(a);
 					}
@@ -865,6 +869,9 @@ window.strgact = function (changeinfo) {
 				if (!val.title) {
 					continue;
 				}
+				if (!val.loc) {
+					val.loc=0;
+				}
 				else if (val.type=="folder"&&val.title.indexOf("/")!=-1) {
 					while (val.title.indexOf("/")!=-1) {
 						val.title = await dialog({body:"'/'는 사용할수 없습니다.", value:val.title});
@@ -901,6 +908,7 @@ window.strgact = function (changeinfo) {
 				bmkptr.value[val.title].data.created = b;
 				bmkptr.value[val.title].data.modified = b;
 				bmkptr.value[val.title].data.croped=false;
+				bmkptr.value[val.title].data.scroll=val.loc;
 				bmkptr.value[val.title].type = val.type;
 				if (val.type=="link") {
 					bmkptr.value[val.title].value = val.url;
