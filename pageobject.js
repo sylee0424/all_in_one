@@ -848,9 +848,8 @@ window.Extension_Tool_Functions = {
 			}
 			if (item.events) {
 				for (var i = 0; i < item.events.length; i++) {
-					div.addEventListener(item.events[i].name, item.events[i].value);
+					div.addEventListener(item.events[i].name, item.events[i].value,{passive:true});
 				}
-
 			}
 			if (item.attributes) {
 				for (var i = 0; i < item.attributes.length; i++) {

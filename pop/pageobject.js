@@ -244,7 +244,6 @@ window.bufs = {
 				b.dataset.src = bmkptr.value[val].value;
 				b.dataset.loc = bmkpath;
 				b.dataset.index = index;
-				b.dataset.length = Number(bmkptr.value[val].data.scroll);
 				b.classList.add("__"+bmkptr.value[val].type);
 				b.id = val;
 				b.appendChild(document.createTextNode(val));
@@ -272,7 +271,7 @@ window.bufs = {
 					loc:document.getElementById("dir").dataset.loc,
 					data:a
 				});
-			},{code:"var a={}; a.title=document.title; a.url=location.href; a.type='link'; a.loc=document.documentElement.scrollTop; a;"});
+			},{code:"var a={}; a.title=document.title; a.url=location.href; a.type='link'; a;"});
 		},
 
 		name: "add"
@@ -906,7 +905,6 @@ window.strgact = function (changeinfo) {
 				bmkptr.value[val.title].data.created = b;
 				bmkptr.value[val.title].data.modified = b;
 				bmkptr.value[val.title].data.croped=false;
-				bmkptr.value[val.title].data.scroll=val.loc;
 				bmkptr.value[val.title].type = val.type;
 				if (val.type=="link") {
 					bmkptr.value[val.title].value = val.url;
