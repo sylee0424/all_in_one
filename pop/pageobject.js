@@ -964,6 +964,7 @@ window.strgact = function (changeinfo) {
 				else {
 					bmkptr.value[val.title].value = {};
 				}
+				bmkptr.data.order.push(val.title);
 			}
 		}
 		else if (changeinfo.type=="remove") {
@@ -982,6 +983,7 @@ window.strgact = function (changeinfo) {
 					c.croped.push(bmkptr.value[val.name]);
 					if (!changeinfo.copy) {
 						delete bmkptr.value[val.name];
+						bmkptr.data.order.splice(bmkptr.data.order.indexOf(val.name),1);
 					}
 				});
 				extension.storage.local.set({"croped":c.croped});
@@ -996,6 +998,7 @@ window.strgact = function (changeinfo) {
 				bmkptr.value[val.title]=bmkptr.value[val.ptitle];
 				if (val.title!=val.ptitle) {
 					delete bmkptr.value[val.ptitle];
+					bmkptr.data.order[bmkptr.data.order.indexOf(val.ptitle)]=val.title;
 				}
 				if (val.type=="link") {
 					bmkptr.value[val.title].value=val.url;
@@ -1039,6 +1042,7 @@ window.strgact = function (changeinfo) {
 				bmkptr.value[val.title]=bmkptr.value[val.ptitle];
 				if (val.title!=val.ptitle) {
 					delete bmkptr.value[val.ptitle];
+					bmkptr.data.order[bmkptr.data.order.indexOf(val.ptitle)]=val.title;
 				}
 				if (val.type=="link") {
 					bmkptr.value[val.title].value=val.url;
@@ -1053,12 +1057,14 @@ window.strgact = function (changeinfo) {
 					if (!bmkptr.value[val.data.name]) {
 						bmkptr.value[val.data.name] = val;
 						bmkptr.value[val.data.name].data.croped=false;
+						bmkptr.data.order.push(val.data.name);
 					} else {
 						if (bmkptr.value[val.data.name].type=="link") {
 							var a=bmkptr.value[val.data.name];
 							bmkptr.value[val.data.name] = val;
 							bmkptr.value[val.data.name].data.croped=false;
-							bmkptr.value[val.data.name].data.exx=a;
+							bmkptr.value[val.data.name].exx=a;
+							bmkptr.data.order.push(val.data.name);
 						}
 						else {
 							MergeRecursive(bmkptr.value[val.data.name].value,val.value);
@@ -1084,6 +1090,7 @@ window.strgact = function (changeinfo) {
 					}
 					bmkptr.value[val.data.name] = val;
 					bmkptr.value[val.data.name].data.croped=false;
+					bmkptr.data.order.push(val.data.name);
 				}
 			}
 			extension.storage.local.remove("croped");
@@ -1096,6 +1103,7 @@ window.strgact = function (changeinfo) {
 				});
 				bmkptr.value[val.data.name]=val;
 				bmkptr.value[val.data.name].data.croped=false;
+				bmkptr.data.order.push(val.data.name);
 			});
 			extension.storage.local.remove("croped");
 		}
