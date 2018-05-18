@@ -201,6 +201,39 @@ window.etfs = {
 };
 
 window.bufs = {
+	
+	showlist: {
+		f: async function (lists) {
+			var a = document.getElementById("bmks");
+			var e = Number(a.scrollTop);
+			while (a.firstChild) {
+				a.removeChild(a.firstChild);
+			}
+			lists.forEach(function (val,index) {
+				var c = document.createElement("div");
+				var b = document.createElement("label");
+				c.dataset.id = val.data.name;
+				c.dataset.loc = val.data.path;
+				c.id="chk"+val;
+				c.classList.add("__input");
+				c.classList.add("__hided");
+				if (index==0) {
+					b.classList.add("__selected");
+				}
+				b.appendChild(c);
+				b.dataset.src = val.value;
+				b.dataset.loc = val.path;
+				b.dataset.index = index;
+				b.classList.add("__"+val.type);
+				b.id = val;
+				b.appendChild(document.createTextNode(val.data.name));
+				document.getElementById("bmks").appendChild(b);
+				document.getElementById("bmks").appendChild(document.createElement("br"));
+				b.addEventListener("click", bufs.clickact.f);
+				b.addEventListener("contextmenu",(event)=>bufs.clickact.f.call(b,event));
+			});
+		}
+	},
 
 	show: {
 		f: async function(bmkpath,edit=false,bmkname) {
@@ -224,11 +257,13 @@ window.bufs = {
 				document.getElementById("dir").dataset.loc="root";
 				return undefined;
 			}
+			console.log(bmkptr);
 			var lists=Object.keys(bmkptr.value);
 			lists.forEach(function (val,index) {
 				var c = document.createElement("div");
 				var b = document.createElement("label");
 				c.dataset.id = val;
+				c.dataset.loc = bmkpath;
 				c.id="chk"+val;
 				c.classList.add("__input");
 				if (!edit) {
@@ -251,6 +286,7 @@ window.bufs = {
 				document.getElementById("bmks").appendChild(document.createElement("br"));
 				b.addEventListener("click", bufs.clickact.f);
 				b.addEventListener("contextmenu",(event)=>bufs.clickact.f.call(b,event));
+				b.addEventListener("mousedown",(event)=>(event.which==2?bufs.clickact.f.call(b,event):undefined));
 			});
 			a.scrollTop = e;
 			extension.storage.local.set({"loc":bmkpath});
@@ -451,7 +487,7 @@ window.bufs = {
 				loc:document.getElementById("dir").dataset.loc,
 				data:Array.prototype.slice.call(
 					document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked")
-				).map(val => val.dataset.id),
+				).map(val => ({name : val.dataset.id,loc : val.dataset.loc})),
 				crop:true
 			});
 		},
@@ -469,7 +505,7 @@ window.bufs = {
 				loc:document.getElementById("dir").dataset.loc,
 				data:Array.prototype.slice.call(
 					document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked")
-				).map(val => val.dataset.id),
+				).map(val => ({name : val.dataset.id,loc : val.dataset.loc})),
 				crop:true,
 				copy:true
 			});
@@ -579,7 +615,26 @@ window.bufs = {
 		},
 
 		name: "getexternal"
-	}
+	},
+	
+	search: {
+		f: function (bmk,tag) {
+			var arr=[]
+			for (var a in bmk.value) {
+				if (bmk.value[a].type=="link") {
+					if (bmk.value[a].tags[tag]) {
+						bmk.value[a].data.name=a;
+						arr.push(bmk.value[a]);
+					}
+				}
+				else if (bmk.value[a].type=="folder") {
+					arr.concat(bufs.search.f(bmk.value[a],tag));
+				}
+			}
+			return arr;
+		},
+		name:"search"
+	},
 
 }
 
@@ -866,9 +921,6 @@ window.strgact = function (changeinfo) {
 				if (!val.title) {
 					continue;
 				}
-				if (!val.loc) {
-					val.loc=0;
-				}
 				else if (val.type=="folder"&&val.title.indexOf("/")!=-1) {
 					while (val.title.indexOf("/")!=-1) {
 						val.title = await dialog({body:"'/'는 사용할수 없습니다.", value:val.title});
@@ -920,17 +972,19 @@ window.strgact = function (changeinfo) {
 					c.croped=[];
 				}
 				changeinfo.data.forEach(function (val) {
-					bmkptr.value[val].data.name=val;
-					bmkptr.value[val].path=changeinfo.loc;
-					c.croped.push(bmkptr.value[val]);
-					delete bmkptr.value[val];
+					bmkptr=bmk;
+					console.log(val);
+					val.loc.split("/").forEach(function (val2) {
+						bmkptr=bmkptr.value[val2];
+					});
+					bmkptr.value[val.name].data.name = val.name;
+					bmkptr.value[val.name].path = val.loc;
+					c.croped.push(bmkptr.value[val.name]);
+					if (!changeinfo.copy) {
+						delete bmkptr.value[val.name];
+					}
 				});
 				extension.storage.local.set({"croped":c.croped});
-			}
-			if (!changeinfo.copy) {
-				changeinfo.data.forEach(function (val) {
-					delete bmkptr.value[val];
-				});
 			}
 		}
 		else if (changeinfo.type=="update") {
