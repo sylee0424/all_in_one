@@ -250,16 +250,7 @@ function contentonmessage(event) {
 					});
 					Bookmark_Folders.sort();
 					Bookmark_Links.sort();
-					Bookmark_Folders.forEach(function (val) {
-						Temporal_Bookmark[val] = bmkptr.value[val];
-						delete bmkptr.value[val];
-						bmkptr.value[val] = Temporal_Bookmark[val];
-					});
-					Bookmark_Links.forEach(function (val) {
-						Temporal_Bookmark[val] = bmkptr.value[val];
-						delete bmkptr.value[val];
-						bmkptr.value[val] = Temporal_Bookmark[val];
-					});
+					bmkptr.data.order=[].concat(Bookmark_Folders,Bookmark_Links);
 				}
 				extension.storage.local.set({"bmks":escape(JSON.stringify(bmk))});
 				window.postMessage({type:"update","bmk":bmk},location.href);

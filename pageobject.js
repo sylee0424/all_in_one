@@ -554,9 +554,11 @@ window.Extension_Tool_Functions = {
 
 	change_bmk: {
 		f: function (bmk,path) {
+			bmk.data.order=[];
 			for (var a in bmk.value) {
+				bmk.data.order.push(a);
 				bmk.value[a].path=path;
-				bmk.value[a].tags={"test":false};
+				delete bmk.value[a].tags;
 				if (bmk.value[a].type=="folder") {
 					Extension_Tool_Functions.change_bmk.f(bmk.value[a],bmk.value[a].path+(path?"/":"")+a);
 				}

@@ -258,7 +258,7 @@ window.bufs = {
 				return undefined;
 			}
 			console.log(bmkptr);
-			var lists=Object.keys(bmkptr.value);
+			var lists=bmkptr.data.order;
 			lists.forEach(function (val,index) {
 				var c = document.createElement("div");
 				var b = document.createElement("label");
@@ -1117,16 +1117,7 @@ window.strgact = function (changeinfo) {
 			});
 			Bookmark_Folders.sort();
 			Bookmark_Links.sort();
-			Bookmark_Folders.forEach(function (val) {
-				Temporal_Bookmark[val] = bmkptr.value[val];
-				delete bmkptr.value[val];
-				bmkptr.value[val] = Temporal_Bookmark[val];
-			});
-			Bookmark_Links.forEach(function (val) {
-				Temporal_Bookmark[val] = bmkptr.value[val];
-				delete bmkptr.value[val];
-				bmkptr.value[val] = Temporal_Bookmark[val];
-			});
+			bmkptr.data.order=[].concat(Bookmark_Folders,Bookmark_Links);
 		}
 		extension.storage.local.set({"bmks":escape(JSON.stringify(bmk))});
 		ev.bmk=bmk;
