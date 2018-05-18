@@ -100,6 +100,7 @@ function contentonmessage(event) {
 						else {
 							bmkptr.value[val.title].value = {};
 						}
+						bmkptr.data.order.push(val.title);
 					});
 				}
 				else if (event.data.changeinfo.type=="remove") {
@@ -112,12 +113,14 @@ function contentonmessage(event) {
 							bmkptr.value[val].path=event.data.changeinfo.loc;
 							c.croped.push(bmkptr.value[val]);
 							delete bmkptr.value[val];
+							bmkptr.data.order.splice(bmkptr.data.order.indexOf(val.name),1);
 						});
 						extension.storage.local.set({"croped":c.croped});
 					}
 					else {
 						event.data.changeinfo.data.forEach(function (val) {
 							delete bmkptr.value[val];
+							bmkptr.data.order.splice(bmkptr.data.order.indexOf(val.name),1);
 						});
 					}
 				}
@@ -129,6 +132,7 @@ function contentonmessage(event) {
 						bmkptr.value[val.title]=bmkptr.value[val.ptitle];
 						if (val.title!=val.ptitle) {
 							delete bmkptr.value[val.ptitle];
+							bmkptr.data.order[bmkptr.data.order.indexOf(val.ptitle)]=val.title;
 						}
 						if (val.type=="link") {
 							bmkptr.value[val.title].value=val.url;
@@ -172,6 +176,7 @@ function contentonmessage(event) {
 						bmkptr.value[val.title]=bmkptr.value[val.ptitle];
 						if (val.title!=val.ptitle) {
 							delete bmkptr.value[val.ptitle];
+							bmkptr.data.order[bmkptr.data.order.indexOf(val.ptitle)]=val.title;
 						}
 						if (val.type=="link") {
 							bmkptr.value[val.title].value=val.url;
@@ -186,12 +191,14 @@ function contentonmessage(event) {
 							if (!bmkptr.value[val.data.name]) {
 								bmkptr.value[val.data.name] = val;
 								bmkptr.value[val.data.name].data.croped=false;
+								bmkptr.data.order.push(val.data.name);
 							} else {
 								if (bmkptr.value[val.data.name].type=="link") {
 									var a=bmkptr.value[val.data.name];
 									bmkptr.value[val.data.name] = val;
 									bmkptr.value[val.data.name].data.croped=false;
 									bmkptr.value[val.data.name].data.exx=a;
+									bmkptr.data.order.push(val.data.name);
 								}
 								else {
 									MergeRecursive(bmkptr.value[val.data.name].value,val.value);
@@ -217,6 +224,7 @@ function contentonmessage(event) {
 							}
 							bmkptr.value[val.data.name] = val;
 							bmkptr.value[val.data.name].data.croped=false;
+							bmkptr.data.order.push(val.data.name);
 						}
 					});
 					extension.storage.local.remove("croped");
@@ -229,6 +237,7 @@ function contentonmessage(event) {
 						});
 						bmkptr.value[val.data.name]=val;
 						bmkptr.value[val.data.name].data.croped=false;
+						bmkptr.data.order.push(val.data.name);
 					});
 					extension.storage.local.remove("croped");
 				}
