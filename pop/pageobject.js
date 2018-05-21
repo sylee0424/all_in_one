@@ -957,6 +957,7 @@ window.strgact = function (changeinfo) {
 				bmkptr.value[val.title].data.created = b;
 				bmkptr.value[val.title].data.modified = b;
 				bmkptr.value[val.title].data.croped=false;
+				bmkptr.value[val.title].data.order=[];
 				bmkptr.value[val.title].type = val.type;
 				if (val.type=="link") {
 					bmkptr.value[val.title].value = val.url;
@@ -1273,6 +1274,11 @@ window.dialog = function (option={}) {
 	});
 	console.log(ret);
 	return ret;
+}
+
+window.mergebmk = function (origin,target) {
+	var order=[].concat(origin.data.order,target.data.order);
+	var b=(new Date()).getTime();
 }
 
 window.addEventListener("keydown",keyboardaction);
