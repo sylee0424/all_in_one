@@ -213,8 +213,8 @@ window.bufs = {
 				var c = document.createElement("div");
 				var b = document.createElement("label");
 				c.dataset.id = val.data.name;
-				c.dataset.loc = val.data.path;
-				c.id="chk"+val;
+				c.dataset.loc = val.path;
+				c.id="chk"+val.data.name;
 				c.classList.add("__input");
 				c.classList.add("__hided");
 				if (index==0) {
@@ -225,7 +225,7 @@ window.bufs = {
 				b.dataset.loc = val.path;
 				b.dataset.index = index;
 				b.classList.add("__"+val.type);
-				b.id = val;
+				b.id = val.data.name;
 				b.appendChild(document.createTextNode(val.data.name));
 				document.getElementById("bmks").appendChild(b);
 				document.getElementById("bmks").appendChild(document.createElement("br"));
@@ -241,6 +241,10 @@ window.bufs = {
 			var e = Number(a.scrollTop);
 			while (a.firstChild) {
 				a.removeChild(a.firstChild);
+			}
+			if (bmkpath.indexOf("/searchresult")!=-1) {
+				bufs.goup.f();
+				return undefined;
 			}
 			if (!ev.bmk) {
 				if (await dialog({body:"web bookmark load failed.\nload bookmark from local?",confirm:true})){
@@ -258,8 +262,7 @@ window.bufs = {
 				return undefined;
 			}
 			console.log(bmkptr);
-			var lists=bmkptr.data.order;
-			lists.forEach(function (val,index) {
+			bmkptr.data.order.forEach(function (val,index) {
 				var c = document.createElement("div");
 				var b = document.createElement("label");
 				c.dataset.id = val;
@@ -618,23 +621,23 @@ window.bufs = {
 	},
 	
 	search: {
-		f: function (bmk,tag) {
+		f: function (bmk,option) {
 			var arr=[]
 			for (var a in bmk.value) {
-				if (bmk.value[a].type=="link") {
-					if (bmk.value[a].tags[tag]) {
-						bmk.value[a].data.name=a;
-						arr.push(bmk.value[a]);
-					}
+				if (option.url&&bmk.value[a].type=="link"&&bmk.value[a].value.match(new RegExp(option.url.val,"i"))) {
+					arr.push(bmk.value[a]);
 				}
-				else if (bmk.value[a].type=="folder") {
-					arr.concat(bufs.search.f(bmk.value[a],tag));
+				else if (option.name&&a.match(new RegExp(option.name.val,"i"))) {
+					arr.push(bmk.value[a]);
+				}
+				if (bmk.value[a].type=="folder") {
+					arr=arr.concat(bufs.search.f(bmk.value[a],option));
 				}
 			}
 			return arr;
 		},
 		name:"search"
-	},
+	}
 
 }
 
@@ -661,6 +664,31 @@ window.ev = {
 				a.forEach(function (val) {
 					val.classList.toggle("__hided");
 				});
+			}
+		}]
+	},
+	{
+		tag: "div",
+		name: "search bmk",
+		image: dataurls.search,
+		classname: ["__buttons","__inedit"],
+		events: [{
+			name: "click",
+			value: async function () {
+				var aaa = await dialog({body:"url값",confirm:true});
+				var bbb = await dialog({body:"검색할 값",value:"search..."});
+				var ccc={};
+				if (!bbb) {
+					return undefined;
+				}
+				var bmkptr = ev.bmk;
+				document.getElementById("dir").dataset.loc.split("/").forEach(function (val) {
+					bmkptr = bmkptr.value[val];
+				});
+				ccc[(aaa?"url":"name")]={val:bbb};
+				document.getElementById("dir").dataset.loc+="/searchresult";
+				document.getElementById("dir").innerText+="/searchresult";
+				bufs.showlist.f(bufs.search.f(bmkptr,ccc));
 			}
 		}]
 	},
@@ -1068,7 +1096,7 @@ window.strgact = function (changeinfo) {
 							bmkptr.data.order.push(val.data.name);
 						}
 						else {
-							MergeRecursive(bmkptr.value[val.data.name].value,val.value);
+							mergebmk(bmkptr.value[val.data.name].value,val.value);
 						}
 						return undefined;
 					}
@@ -1110,7 +1138,7 @@ window.strgact = function (changeinfo) {
 		}
 		else if (changeinfo.type=="import") {
 			changeinfo.data.forEach(function (val) {
-				bmk=MergeRecursive(bmk,val);
+				bmk=mergebmk(bmk,val);
 			});
 		}
 		else if (changeinfo.type=="sort") {
@@ -1278,7 +1306,36 @@ window.dialog = function (option={}) {
 
 window.mergebmk = function (origin,target) {
 	var order=[].concat(origin.data.order,target.data.order);
-	var b=(new Date()).getTime();
+	for (var a in target.value) {
+		if (origin.value[a]) {
+			if (origin.value[a].type="link") {
+				if (target.value[a].type="link") {
+					target.value[a].path=origin.value[a].path;
+					origin.value[a]=target.value[a];
+				}
+				else if (target.value[a].type="folder") {
+					target.value[a].path=origin.value[a].path;
+					origin.value["temp_link_"+a+"#"+(new Date()).getTime()]=origin.value[a];
+					origin.value[a]=target.value[a];
+				}
+			}
+			else if (origin.value[a].type="folder") {
+				if (target.value[a].type="link") {
+					target.value[a].path=origin.value[a].path;
+					origin.value["temp_link_"+a+"#"+(new Date()).getTime()]=target.value[a];
+				}
+				else if (target.value[a].type="folder") {
+					mergebmk(origin.value[a],target.value[a]);
+				}
+			}
+		}
+		else {
+			origin.value[a]=target.value[a];
+			origin.value[a].path=origin.path+(origin.path?"/":"")+origin.data.name;
+		}
+	}
+	origin.data.order=order;
+	origin.data.modified=(new Date()).getTime();
 }
 
 window.addEventListener("keydown",keyboardaction);

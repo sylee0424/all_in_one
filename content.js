@@ -91,6 +91,7 @@ function contentonmessage(event) {
 						bmkptr.value[val.title].data={};
 						var b=(new Date()).getTime();
 						bmkptr.value[val.title].data.created = b;
+						bmkptr.value[val.title].data.name = val.title;
 						bmkptr.value[val.title].data.modified = b;
 						bmkptr.value[val.title].data.croped=false;
 						bmkptr.value[val.title].type = val.type;
@@ -130,6 +131,7 @@ function contentonmessage(event) {
 							return undefined;
 						}
 						bmkptr.value[val.title]=bmkptr.value[val.ptitle];
+						bmkptr.value[val.title].data.name=val.title;
 						if (val.title!=val.ptitle) {
 							delete bmkptr.value[val.ptitle];
 							bmkptr.data.order[bmkptr.data.order.indexOf(val.ptitle)]=val.title;
@@ -183,6 +185,7 @@ function contentonmessage(event) {
 						}
 						var b=(new Date()).getTime();
 						bmkptr.value[val.title].data.modified = b;
+						bmkptr.value[val.title].data.name=val.title;
 					});
 				}
 				else if (event.data.changeinfo.type=="move") {
@@ -224,6 +227,7 @@ function contentonmessage(event) {
 							}
 							bmkptr.value[val.data.name] = val;
 							bmkptr.value[val.data.name].data.croped=false;
+							bmkptr.value[val.data.name].data.name=val.data.name;
 							bmkptr.data.order.push(val.data.name);
 						}
 					});
