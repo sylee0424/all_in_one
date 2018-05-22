@@ -994,7 +994,9 @@ window.strgact = function (changeinfo) {
 				else {
 					bmkptr.value[val.title].value = {};
 				}
-				bmkptr.data.order.push(val.title);
+				if (bmkptr.data.order.indexOf(val.title)==-1) {
+					bmkptr.data.order.push(val.title);
+				}
 			}
 		}
 		else if (changeinfo.type=="remove") {
