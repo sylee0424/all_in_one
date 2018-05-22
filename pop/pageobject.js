@@ -433,7 +433,7 @@ window.bufs = {
 				loc:document.getElementById("dir").dataset.loc,
 				data:Array.prototype.slice.call(
 					document.getElementById("bmks").querySelectorAll("#bmks .__input.__checked")
-				).map(val => val.dataset.id)
+				).map(val => ({name:val.dataset.id,loc:val.dataset.loc}))
 			});
 		},
 
@@ -676,7 +676,7 @@ window.ev = {
 			name: "click",
 			value: async function () {
 				var aaa = await dialog({body:"url값",confirm:true});
-				var bbb = await dialog({body:"검색할 값",value:"search..."});
+				var bbb = await dialog({body:"검색할 값",scribe:"search..."});
 				var ccc={};
 				if (!bbb) {
 					return undefined;
@@ -686,6 +686,7 @@ window.ev = {
 					bmkptr = bmkptr.value[val];
 				});
 				ccc[(aaa?"url":"name")]={val:bbb};
+				document.getElementById("go_up").classList.remove("__disabled");
 				document.getElementById("dir").dataset.loc+="/searchresult";
 				document.getElementById("dir").innerText+="/searchresult";
 				bufs.showlist.f(bufs.search.f(bmkptr,ccc));
@@ -997,26 +998,26 @@ window.strgact = function (changeinfo) {
 			}
 		}
 		else if (changeinfo.type=="remove") {
-			if (changeinfo.crop) {
-				if (!c.croped) {
-					c.croped=[];
-				}
-				changeinfo.data.forEach(function (val) {
-					bmkptr=bmk;
-					console.log(val);
-					val.loc.split("/").forEach(function (val2) {
-						bmkptr=bmkptr.value[val2];
-					});
+			if (!c.croped) {
+				c.croped=[];
+			}
+			changeinfo.data.forEach(function (val) {
+				bmkptr=bmk;
+				console.log(val);
+				val.loc.split("/").forEach(function (val2) {
+					bmkptr=bmkptr.value[val2];
+				});
+				if (changeinfo.crop) {
 					bmkptr.value[val.name].data.name = val.name;
 					bmkptr.value[val.name].path = val.loc;
 					c.croped.push(bmkptr.value[val.name]);
-					if (!changeinfo.copy) {
-						delete bmkptr.value[val.name];
-						bmkptr.data.order.splice(bmkptr.data.order.indexOf(val.name),1);
-					}
-				});
-				extension.storage.local.set({"croped":c.croped});
-			}
+				}
+				if (!changeinfo.copy) {
+					delete bmkptr.value[val.name];
+					bmkptr.data.order.splice(bmkptr.data.order.indexOf(val.name),1);
+				}
+			});
+			extension.storage.local.set({"croped":c.croped});
 		}
 		else if (changeinfo.type=="update") {
 			console.log(changeinfo);
@@ -1280,7 +1281,13 @@ window.dialog = function (option={}) {
 	if (option.body) {
 		document.querySelector("#modalbody").innerText=option.body;
 	}
-	if (option.value) {
+	if (option.scribe) {
+		document.querySelector("#modalinput").placeholder=option.scribe;
+		document.querySelector("#modalinput").value="";
+		document.querySelector("#modalinput").classList.remove("__hided");
+		document.querySelector("#modalconfirm").classList.add("__hided");
+	}
+	else if (option.value) {
 		document.querySelector("#modalinput").value=option.value;
 		document.querySelector("#modalinput").classList.remove("__hided");
 		document.querySelector("#modalconfirm").classList.add("__hided");
