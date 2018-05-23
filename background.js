@@ -59,18 +59,6 @@ function importbmk() {
 		//document.getElementById("bmks").innerHTML="load fail!";
 				console.log("error");
 	}
-	
-	var rep = new XMLHttpRequest();
-	rep.open('GET', "https://psydel.000webhostapp.com/append.php",true);
-	rep.onreadystatechange = function (aEvt) {
-		if (rep.readyState == 4&&rep.status == 200) {
-			window.e=JSON.parse(escape(rep.responseText));
-		}
-		else if (rep.status == 423) {
-			//document.getElementById("getbmk").style.display="block";
-		}
-	}
-	
 }
 
 function listener() {
