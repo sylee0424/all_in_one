@@ -1,33 +1,40 @@
-var w=w;
+var w=window;
 var x=w.parent;
+var p=x.postMessage;
 var u="https://psydel.000webhostapp.com/";
 
 w.addEventListener("message",function (e) {
 	var f=e.data;
-	if (f.type=="getbmk") {
-		x.postMessage({
+	var g=f.type.match;
+	if (g("getbmk")) {
+		p({
 			"bmk":glb(),
 			"type":"getbmk"
 		},f.href);
 	}
-	else if (f.type=="setbmk") {
+	else if (g("setbmk")) {
 		slb(f.bmk);
-		x.postMessage({
+		p({
 			"result":"complete",
 			"type":"setbmk"
 		},f.href);
 	}
-	else if (f.type=="import") {
+	else if (g("import")) {
 		var req = new XMLHttpRequest();
 		req.open('GET',u,true);
 		req.onreadystatechange = function (aEvt) {
 			if (req.readyState == 4&&req.status == 200) {
-				slb(JSON.parse(escape(req.responseText)));
+				var r=JSON.parse(escape(req.responseText));
+				slb(r);
+				p({
+					"bmk":r,
+					"type":"getbmk"
+				},f.href);
 			}
 		};
 		req.send(null);
 	}
-	else if (f.type=="export") {
+	else if (g("export")) {
 		var req = new XMLHttpRequest();
 		req.open('POST',u,true);
 		req.onreadystatechange = function (aEvt) {
@@ -38,6 +45,12 @@ w.addEventListener("message",function (e) {
 		var dats = new FormData();
 		dats.append("id",glb());
 		req.send(dats);
+	}
+	else if (g("change")) {
+		var b=glb();
+		if (f.a=="add") {
+			
+		}
 	}
 });
 
