@@ -1,5 +1,3 @@
-
-
 window.addEventListener("message",function (e) {
 	if (e.data.type.match("getbmk")) {
 		window.parent.postMessage({
@@ -43,22 +41,33 @@ window.addEventListener("message",function (e) {
 	else if (e.data.type.match("change")) {
 		var bmk=getlocalbmk();
 		var bmkptr=bmk;
-		e.data.act.loc.split("/").forEach(function (v) {
+		var info=e.data.info;
+		info.loc.split("/").forEach(function (v) {
 			bmkptr=bmkptr.value[v];
 		});
-		if (e.data.act.match("add")) {
+		if (info.act.match("add")) {
+			info.data.forEach(function (v) {
+				
+			});
+		}
+		else if (info.act.match("new")) {
+			info.data.forEach(function (v) {
+				
+			});
+		}
+		else if (info.act.match("remove")) {
 			
 		}
-		else if (e.data.act.match("remove")) {
+		else if (info.act.match("cut")) {
 			
 		}
-		else if (e.data.act.match("cut")) {
+		else if (info.act.match("copy")) {
 			
 		}
-		else if (e.data.act.match("copy")) {
+		else if (info.act.match("paste")) {
 			
 		}
-		else if (e.data.act.match("paste")) {
+		else if (info.act.match("change")) {
 			
 		}
 	}
