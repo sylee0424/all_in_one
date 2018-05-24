@@ -1,60 +1,70 @@
-var w=window;
-var x=w.parent;
-var p=x.postMessage;
-var u="https://psydel.000webhostapp.com/";
 
-w.addEventListener("message",function (e) {
-	var f=e.data;
-	var g=f.type.match;
-	if (g("getbmk")) {
-		p({
-			"bmk":glb(),
+
+window.addEventListener("message",function (e) {
+	if (e.data.type.match("getbmk")) {
+		window.parent.postMessage({
+			"bmk":getlocalbmk(),
 			"type":"getbmk"
-		},f.href);
+		},e.data.href);
 	}
-	else if (g("setbmk")) {
-		slb(f.bmk);
-		p({
+	else if (e.data.type.match("setbmk")) {
+		setlocalbmk(e.data.bmk);
+		window.parent.postMessage({
 			"result":"complete",
 			"type":"setbmk"
-		},f.href);
+		},e.data.href);
 	}
-	else if (g("import")) {
+	else if (e.data.type.match("import")) {
 		var req = new XMLHttpRequest();
-		req.open('GET',u,true);
+		req.open('GET',window.parent.postMessage,true);
 		req.onreadystatechange = function (aEvt) {
 			if (req.readyState == 4&&req.status == 200) {
-				var r=JSON.parse(escape(req.responseText));
-				slb(r);
-				p({
-					"bmk":r,
+				setlocalbmk(JSON.parse(escape(req.responseText)));
+				window.parent.postMessage({
+					"bmk":JSON.parse(escape(req.responseText)),
 					"type":"getbmk"
-				},f.href);
+				},e.data.href);
 			}
 		};
 		req.send(null);
 	}
-	else if (g("export")) {
+	else if (e.data.type.match("export")) {
 		var req = new XMLHttpRequest();
-		req.open('POST',u,true);
+		req.open('POST',window.parent.postMessage,true);
 		req.onreadystatechange = function (aEvt) {
 			if (req.readyState == 4&&req.status == 200) {
 				alert(req.responseText);
 			}
 		}
 		var dats = new FormData();
-		dats.append("id",glb());
+		dats.append("id",getlocalbmk());
 		req.send(dats);
 	}
-	else if (g("change")) {
-		var b=glb();
-		if (f.a=="add") {
+	else if (e.data.type.match("change")) {
+		var bmk=getlocalbmk();
+		var bmkptr=bmk;
+		e.data.act.loc.split("/").forEach(function (v) {
+			bmkptr=bmkptr.value[v];
+		});
+		if (e.data.act.match("add")) {
+			
+		}
+		else if (e.data.act.match("remove")) {
+			
+		}
+		else if (e.data.act.match("cut")) {
+			
+		}
+		else if (e.data.act.match("copy")) {
+			
+		}
+		else if (e.data.act.match("paste")) {
 			
 		}
 	}
 });
 
-function glb() {
+function getlocalbmk() {
 	var bmklength=Number(localStorage.getItem("bmklength"));
 	var bmkstring="";
 	for (var i=0;i<bmklength;i++) {
@@ -63,7 +73,7 @@ function glb() {
 	return JSON.parse(bmkstring);
 }
 
-function slb(bmk) {
+function setlocalbmk(bmk) {
 	var bmkstring=JSON.stringify(bmk);
 	var bmklength=0;
 	while (bmkstring) {
