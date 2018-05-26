@@ -121,9 +121,13 @@ window.addEventListener("message",function (e) {
 							
 						}
 					}
-					var i=1;
-					while (bmkptr.value[v.data.name+" ("+i+")"]) {
-						i++;
+					else if (bmkptr.value[v.data.name].type=="folder") {
+						if (v.type=="link") {
+							
+						}
+						else if (v.type=="folder") {
+							
+						}
 					}
 				}
 				else {
