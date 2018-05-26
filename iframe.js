@@ -115,34 +115,81 @@ window.addEventListener("message",function (e) {
 				if (bmkptr.value[v.data.name]) {
 					if (bmkptr.value[v.data.name].type=="link") {
 						if (v.type=="link") {
-							
+							v.path=info.loc;
+							bmkptr.value[v.data.name]=v;
 						}
 						else if (v.type=="folder") {
-							
+							var a="temp_link_"+v.data.name+"#"+(new Date()).getTime();
+							v.path=info.loc;
+							bmkptr.value[a]=bmkptr.value[v.data.name];
+							bmkptr.value[v.data.name]=v;
+							bmkptr.data.order.push(a);
 						}
 					}
 					else if (bmkptr.value[v.data.name].type=="folder") {
 						if (v.type=="link") {
-							
+							var a="temp_link_"+v.data.name+"#"+(new Date()).getTime();
+							v.path=info.loc;
+							bmkptr.value[a]=v;
+							bmkptr.data.order.push(a);
 						}
 						else if (v.type=="folder") {
-							
+							v.path=info.loc;
+							mergebmk(bmkptr.value[v.data.name],v);
 						}
 					}
 				}
 				else {
 					bmkptr.value[v.data.name]=v;
-					bmkptr.value[v.data.name].modified=(new Date()).getTime();
-					bmkptr.path=info.loc;
+					bmkptr.value[v.data.name].data.modified=(new Date()).getTime();
+					bmkptr.value[v.data.name].path=info.loc;
 				}
 			});
 		}
+		else if (info.act.match("cancel")) {
+			info.data.forEach(function (v) {
+				var cr=JSON.parse(localStorage.getItem("croped"))||[];
+				cr.forEach(function (v) {
+					bmkptr=bmk;
+					v.loc.split("/").forEach(function (a) {
+						bmkptr=bmkptr.value[a];
+					});
+					bmkptr.value[v.data.name]=v;
+				});
+				localStorage.removeItem("croped");
+			});
+		}
+		else if (info.act.match("sort")) {
+			var Temporal_Bookmark = {};
+			var Bookmark_Folders = [];
+			var Bookmark_Links = [];
+			Object.keys(bmkptr.value).forEach(function (val) {
+				if (bmkptr.value[val].type == "folder") {
+					Bookmark_Folders.push(val);
+				} else {
+					Bookmark_Links.push(val);
+				}
+			});
+			Bookmark_Folders.sort();
+			Bookmark_Links.sort();
+			bmkptr.data.order=[].concat(Bookmark_Folders,Bookmark_Links);
+		}
 		else if (info.act.match("change")) {
 			info.data.forEach(function (v) {
-				
+				if (bmkptr.value[v.name]) {
+					return undefined;
+				}
+				bmkptr.value[v.name]=bmkptr.value[v.pname];
+				bmkptr.data.order.splice(bmkptr.data.order.indexOf(v.pname),1,v.name);
+				bmkptr.value[v.name].data.modified=(new Date()).getTime();
 			});
 		}
 		setlocalbmk(bmk);
+		console.log("setted");
+		window.parent.postMessage({
+			"bmk":bmk,
+			"type":"change"
+		},e.data.href);
 	}
 });
 
@@ -185,6 +232,9 @@ function getlocalbmk() {
 	var bmkstring="";
 	for (var i=0;i<bmklength;i++) {
 		bmkstring+=localStorage.getItem("bmkbody"+i);
+	}
+	if (!bmklength) {
+		return {};
 	}
 	return JSON.parse(bmkstring);
 }
