@@ -39,12 +39,13 @@ window.etfs = {
 	openall : { 
 		f:function () {
 			var bmkptr=ev.bmk.value.temp.value;
-			var list=Object.keys(bmkptr);
-			list.forEach(function (val) {
+			var list=[];
+			Object.keys(bmkptr).forEach(function (val) {
 				var a={};
 				a.url=bmkptr[val].value;
 				a.active=false;
 				extension.tabs.create(a);
+				list.push({loc:"temp",name:val});
 			});
 			strgact({
 				type:"remove",
