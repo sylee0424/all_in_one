@@ -113,14 +113,24 @@ window.addEventListener("message",function (e) {
 			var cr=JSON.parse(localStorage.getItem("croped"))||[];
 			cr.forEach(function (v) {
 				if (bmkptr.value[v.data.name]) {
+					if (bmkptr.value[v.data.name].type=="link") {
+						if (v.type=="link") {
+							
+						}
+						else if (v.type=="folder") {
+							
+						}
+					}
 					var i=1;
 					while (bmkptr.value[v.data.name+" ("+i+")"]) {
 						i++;
 					}
 				}
-				bmkptr.value[v.data.name]=v;
-				bmkptr.value[v.data.name].modified=(new Date()).getTime();
-				bmkptr.path=info.loc;
+				else {
+					bmkptr.value[v.data.name]=v;
+					bmkptr.value[v.data.name].modified=(new Date()).getTime();
+					bmkptr.path=info.loc;
+				}
 			});
 		}
 		else if (info.act.match("change")) {
