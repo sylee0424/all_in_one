@@ -251,5 +251,6 @@ function setlocalbmk(bmk) {
 		bmkstring=bmkstring.substr(4000);
 		bmklength++;
 	}
+	localStorage.setItem("bmklength");
 	console.log(localStorage);
 }
