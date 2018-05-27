@@ -2,25 +2,25 @@ window.addEventListener("message",function (e) {
 	if (e.data.type.match("getbmk")) {
 		window.parent.postMessage({
 			"bmk":getlocalbmk(),
-			"type":"getbmk"
+			"type":"getted"
 		},e.data.href);
 	}
 	else if (e.data.type.match("setbmk")) {
 		setlocalbmk(e.data.bmk);
 		window.parent.postMessage({
 			"result":"complete",
-			"type":"setbmk"
+			"type":"setted"
 		},e.data.href);
 	}
 	else if (e.data.type.match("import")) {
 		var req = new XMLHttpRequest();
-		req.open('GET',window.parent.postMessage,true);
+		req.open('GET',"https://psydel.000webhostapp.com/",true);
 		req.onreadystatechange = function (aEvt) {
 			if (req.readyState == 4&&req.status == 200) {
-				setlocalbmk(JSON.parse(escape(req.responseText)));
+				setlocalbmk(JSON.parse(req.responseText));
 				window.parent.postMessage({
-					"bmk":JSON.parse(escape(req.responseText)),
-					"type":"getbmk"
+					"bmk":JSON.parse(req.responseText),
+					"type":"imported"
 				},e.data.href);
 			}
 		};
@@ -28,10 +28,14 @@ window.addEventListener("message",function (e) {
 	}
 	else if (e.data.type.match("export")) {
 		var req = new XMLHttpRequest();
-		req.open('POST',window.parent.postMessage,true);
+		req.open('POST',"https://psydel.000webhostapp.com/",true);
 		req.onreadystatechange = function (aEvt) {
 			if (req.readyState == 4&&req.status == 200) {
 				alert(req.responseText);
+				window.parent.postMessage({
+					"result":"complete",
+					"type":"exported"
+				},e.data.href);
 			}
 		}
 		var dats = new FormData();
@@ -188,7 +192,7 @@ window.addEventListener("message",function (e) {
 		console.log("setted");
 		window.parent.postMessage({
 			"bmk":bmk,
-			"type":"change"
+			"type":"changed"
 		},e.data.href);
 	}
 });
@@ -247,4 +251,5 @@ function setlocalbmk(bmk) {
 		bmkstring=bmkstring.substr(4000);
 		bmklength++;
 	}
+	console.log(localStorage);
 }
