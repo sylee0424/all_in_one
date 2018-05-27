@@ -544,10 +544,10 @@ window.bufs = {
 
 	exportbmk: {
 		f: function() {
-			window.postMessage({
+			strgact({
 				type: "exportbmk",
-				des: "back"
-			}, location.href);
+				loc: document.getElementById("dir").dataset.loc
+			});
 		},
 
 		name: "exportbmk"
@@ -1144,6 +1144,19 @@ window.strgact = function (changeinfo) {
 			changeinfo.data.forEach(function (val) {
 				bmk=mergebmk(bmk,val);
 			});
+		}
+		else if (changeinfo.type=="export") {
+			var req = new XMLHttpRequest();
+			req.open('POST',"https://psydel.000webhostapp.com/",true);
+			req.onreadystatechange = function (aEvt) {
+				console.log(aEvt);
+				if (req.readyState == 4&&req.status == 200) {
+					alert(req.responseText);
+				}
+			}
+			var dats = new FormData();
+			dats.append("id",unescape(c.bmks));
+			req.send(dats);
 		}
 		else if (changeinfo.type=="sort") {
 			var Temporal_Bookmark = {};

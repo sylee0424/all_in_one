@@ -3,14 +3,14 @@ window.addEventListener("message",function (e) {
 		window.parent.postMessage({
 			"bmk":getlocalbmk(),
 			"type":"getted"
-		},e.data.href);
+		},e.origin);
 	}
 	else if (e.data.type.match("setbmk")) {
 		setlocalbmk(e.data.bmk);
 		window.parent.postMessage({
 			"result":"complete",
 			"type":"setted"
-		},e.data.href);
+		},e.origin);
 	}
 	else if (e.data.type.match("import")) {
 		var req = new XMLHttpRequest();
@@ -21,7 +21,7 @@ window.addEventListener("message",function (e) {
 				window.parent.postMessage({
 					"bmk":JSON.parse(req.responseText),
 					"type":"imported"
-				},e.data.href);
+				},e.origin);
 			}
 		};
 		req.send(null);
@@ -35,11 +35,11 @@ window.addEventListener("message",function (e) {
 				window.parent.postMessage({
 					"result":"complete",
 					"type":"exported"
-				},e.data.href);
+				},e.origin);
 			}
 		}
 		var dats = new FormData();
-		dats.append("id",getlocalbmk());
+		dats.append("id",JSON.stringify(getlocalbmk()));
 		req.send(dats);
 	}
 	else if (e.data.type.match("change")) {
@@ -193,7 +193,7 @@ window.addEventListener("message",function (e) {
 		window.parent.postMessage({
 			"bmk":bmk,
 			"type":"changed"
-		},e.data.href);
+		},e.origin);
 	}
 });
 
@@ -251,6 +251,7 @@ function setlocalbmk(bmk) {
 		bmkstring=bmkstring.substr(4000);
 		bmklength++;
 	}
-	localStorage.setItem("bmklength");
-	console.log(localStorage);
+	localStorage.setItem("bmklength",bmklength);
 }
+
+document.head.removeChild(document.getElementsByTagName("script")[0]);
