@@ -6,8 +6,6 @@
 // @exclude         http*://psydel.000webhostapp.com/iframe/
 // ==/UserScript==
 
-var div=document.createElement("div");
-
 window.addEventListener("message",function (e) {
 	console.log(e);
 	if (e.data.type=="getted") {
@@ -27,7 +25,11 @@ window.addEventListener("message",function (e) {
 	}
 });
 
-var a= document.createElement("iframe");
+var a=document.createElement("style");
+document.head.appendChild(a);
+a.sheet.insertRule("");
+
+a= document.createElement("iframe");
 a.id="bmkaction";
 a.style.display="none";
 document.body.appendChild(a);
