@@ -43,7 +43,27 @@ a.src="http://psydel.000webhostapp.com/iframe/";
 
 window.extension = {
 	
-	iptnds: function(item) {
+	show: function (path,inedit) {
+		var bmkptr=extension.bmk;
+		path.split("/").forEach(function (v) {
+			bmkptr=bmkptr.value[v];
+		});
+		bmkptr.data.order.forEach(function (v) {
+			var a=bmkptr.value[v];
+			var b={
+				tag:"label",
+				id:a.data.name,
+				name:a.data.name,
+				childs:[],
+				classname:["__extension","__bmk"],
+				events:[],
+				data:[],
+			};
+			extension.iptnds(b);
+		});
+	},
+	
+	iptnds: function (item) {
 		var div = document.createElement(item.tag);
 		if (item.classname) {
 			for (var i = 0; i < item.classname.length; i++) {
@@ -72,8 +92,6 @@ window.extension = {
 			}
 			b.classname = ["__innerimage","__extension"];
 			item.childs.push(b);
-		} else if (item.name) {
-			div.appendChild(document.createTextNode(item.name));
 		}
 		if (item.childs) {
 			for (var i = 0; i < item.childs.length; i++) {
@@ -81,15 +99,22 @@ window.extension = {
 				etfs.iptnds.f(item.childs[i]);
 			}
 		}
+		if (item.name&&!item.image) {
+			div.appendChild(document.createTextNode(item.name));
+		}
 		if (item.events) {
 			for (var i = 0; i < item.events.length; i++) {
 				div.addEventListener(item.events[i].name, item.events[i].value);
 			}
-
 		}
 		if (item.attributes) {
 			for (var i = 0; i < item.attributes.length; i++) {
 				div.setAttribute(item.attributes[i].name, item.attributes[i].value);
+			}
+		}
+		if (item.data) {
+			for (var i = 0; i < item.data.length; i++) {
+				div.dataset[item.data[i].name]= item.data[i].value;
 			}
 		}
 		if (item.target) {
