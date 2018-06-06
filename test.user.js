@@ -92,6 +92,17 @@ window.extension = {
 		}
 	},
 	
+	add: function () {
+		document.getElementById("bmkaction").contentWindow.postMessage({
+			type:"change",
+			info:{
+				act:"add",
+				loc:document.getElementById("dir"),
+				data:[{name:prompt("bmk name",document.title),url:prompt("bmk url",location.href)}]
+			}
+		},"*");
+	}
+	
 	lclick: function (e) {
 		if (extension.inedit) {
 			
@@ -164,5 +175,285 @@ window.extension = {
 		} else {
 			document.body.appendChild(div);
 		}
-	}
+	},
+	
+	intfc:[{
+		tag: "div",
+		name: "edit bmks",
+		image: dataurls.edit,
+		classname: ["__buttons","__inedit"],
+		events: [{
+			name: "click",
+			value: extension.actedt
+		}]
+	},
+	{
+		tag: "div",
+		name: "toggle bmktool",
+		image: dataurls.bmktool,
+		classname: ["__buttons","__inedit"],
+		events: [{
+			name: "click",
+			value: function () {
+				var a = document.querySelectorAll(".__bmktool");
+				a.forEach(function (val) {
+					val.classList.toggle("__hided");
+				});
+			}
+		}]
+	},
+	{
+		tag: "div",
+		name: "search bmk",
+		image: dataurls.search,
+		classname: ["__buttons","__inedit"],
+		events: [{
+			name: "click",
+			value: function () {
+				var aaa = confirm("url값");
+				var bbb = prompt("검색할 값","");
+				var ccc={};
+				if (!bbb) {
+					return undefined;
+				}
+				var bmkptr = ev.bmk;
+				document.getElementById("dir").dataset.loc.split("/").forEach(function (val) {
+					bmkptr = bmkptr.value[val];
+				});
+				ccc[(aaa?"url":"name")]={val:bbb};
+				document.getElementById("go_up").classList.remove("__disabled");
+				document.getElementById("dir").dataset.loc+="/searchresult";
+				document.getElementById("dir").innerText+="/searchresult";
+				extension.showlist(extension.search(bmkptr,ccc));
+			}
+		}]
+	},
+	{
+		tag: "div",
+		name: "add bmk",
+		image: dataurls.add,
+		classname: ["__buttons","__inedit"],
+		events: [{
+			name: "click",
+			value: extension.add
+		}]
+	},
+	{
+		tag: "div",
+		name: "sort bmk",
+		classname: ["__buttons","__inedit"],
+		image: dataurls.sort,
+		events: [{
+			name: "click",
+			value: extension.sort
+		}]
+	},
+	{
+		tag: "div",
+		name: "new folder",
+		image: dataurls["new"],
+		classname: ["__buttons","__inedit"],
+		events: [{
+			name: "click",
+			value: extension.newfld
+		}]
+	},
+	{
+		tag: "div",
+		name: "go up",
+		classname: ["__buttons","__disabled","__inedit"],
+		image: dataurls.up,
+		id:"go_up",
+		events: [{
+			name: "click",
+			value: extension.goup
+		}]
+	},
+	{
+		tag: "br"
+	},
+	{
+		tag: "div",
+		id: "tab",
+		events: [{
+			name: "click",
+			value: etfs.toggle.f
+		}],
+		classname:["__input","__extension"]
+	},
+	{
+		tag: "span",
+		name: "this tab",
+		events: [{
+			name: "click",
+			value: function (event) {
+				etfs.toggle.f.call(document.getElementById("tab"),event);
+			}
+		}],
+		classname:["__extension"]
+	},
+	{
+		tag: "div",
+		id: "bactab",
+		events: [{
+			name: "click",
+			value: etfs.toggle.f
+		}],
+		classname:["__input","__extension"]
+	},
+	{
+		tag: "span",
+		name: "background tab",
+		events: [{
+			name: "click",
+			value: function (event) {
+				etfs.toggle.f.call(document.getElementById("bactab"),event);
+			}
+		}],
+		classname:["__extension"]
+	},
+	{
+		tag: "input",
+		id: "getbmk",
+		classname: ["__hided"],
+		events: [{
+			name: "change",
+			value: extension.getexternal
+		}],
+		attributes: [{
+				name: "accept",
+				value: ".json"
+			},
+			{
+				name: "type",
+				value: "file"
+			}
+		]
+	},
+	{
+		tag: "div",
+		name: "root",
+		id: "dir",
+		attributes: [{
+			name: "data-loc",
+			value: "root"
+		}]
+	},
+	{
+		tag: "div",
+		name: "remove",
+		image: dataurls.remove,
+		events: [{
+			name: "click",
+			value: extension.remove
+		}],
+		classname: ["__invisibled","__buttons","__editout"]
+	},
+	{
+		tag: "div",
+		name: "copy",
+		image: dataurls.copy,
+		events: [{
+			name: "click",
+			value: extension.copy
+		}],
+		classname: ["__invisibled","__buttons","__editout"]
+	},
+	{
+		tag: "div",
+		name: "move",
+		image: dataurls.move,
+		events: [{
+			name: "click",
+			value: extension.move
+		}],
+		classname: ["__invisibled","__buttons","__editout"]
+	},
+	{
+		tag: "div",
+		name: "end",
+		image: dataurls.end,
+		events: [{
+			name: "click",
+			value: extension.editdact
+		}],
+		classname: ["__invisibled","__buttons","__editout"]
+	},
+	{
+		tag: "div",
+		name: "addall",
+		image: dataurls.addall,
+		classname: ["__buttons","__inedit","__bmktool","__hided"],
+		events: [{
+			name: "click",
+			value: etfs.addall.f
+		}]
+	},
+	{
+		tag: "div",
+		name: "openall",
+		image: dataurls.openall,
+		classname: ["__buttons","__bmktool","__hided"],
+		events: [{
+			name: "click",
+			value: etfs.openall.f
+		}]
+	},
+	{
+		tag: "div",
+		name: "import",
+		image: dataurls["import"],
+		classname: ["__buttons","__bmktool","__hided"],
+		events: [{
+			name: "click",
+			value: extension.importbmk
+		}]
+	},
+	{
+		tag: "div",
+		name: "export",
+		image: dataurls["export"],
+		classname: ["__buttons","__bmktool","__hided"],
+		events: [{
+			name: "click",
+			value: extension.exportbmk
+		}]
+	},
+	{
+		tag: "div",
+		name: "backup",
+		image: dataurls.backup,
+		classname: ["__buttons","__bmktool","__hided"],
+		events: [{
+			name: "click",
+			value: extension.backup
+		}]
+	},
+	{
+		tag: "div",
+		name: "merge",
+		image: dataurls.merge,
+		classname: ["__buttons","__bmktool","__hided"],
+		events: [{
+			name: "click",
+			value: extension.external
+		}]
+	},
+	{
+		tag: "div",
+		name: "expand",
+		image: dataurls.expand,
+		classname: ["__buttons","__bmktool","__hided"],
+		events: [{
+			name: "click",
+			value: function (event) {
+				document.getElementById("bmkmain").classList.toggle("__expanded");
+			}
+		}]
+	},
+	{
+		tag: "div",
+		name: "loading...",
+		id: "bmks"
+	}]
 }
