@@ -16,13 +16,13 @@ window.addEventListener("message",function (e) {
 	else if (e.data.type=="setted") {
 		
 	}
-	else if (e.data.type=="imported") {
+	else if (e.data.type=="importd") {
 		
 	}
-	else if (e.data.type=="exported") {
+	else if (e.data.type=="exportd") {
 		
 	}
-	else if (e.data.type=="changed") {
+	else if (e.data.type=="changd") {
 		
 	}
 });
@@ -101,7 +101,15 @@ window.extension = {
 				data:[{name:prompt("bmk name",document.title),url:prompt("bmk url",location.href)}]
 			}
 		},"*");
-	}
+	},
+	
+	edtact: function () {
+		
+	},
+	
+	edtdact: function () {
+		
+	},
 	
 	lclick: function (e) {
 		if (extension.inedit) {
@@ -184,7 +192,7 @@ window.extension = {
 		classname: ["__buttons","__inedit"],
 		events: [{
 			name: "click",
-			value: extension.actedt
+			value: extension.edtact
 		}]
 	},
 	{
@@ -375,7 +383,7 @@ window.extension = {
 		image: dataurls.end,
 		events: [{
 			name: "click",
-			value: extension.editdact
+			value: extension.edtdact
 		}],
 		classname: ["__invisibled","__buttons","__editout"]
 	},

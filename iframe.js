@@ -20,7 +20,7 @@ window.addEventListener("message",function (e) {
 				setlocalbmk(JSON.parse(req.responseText));
 				window.parent.postMessage({
 					"bmk":JSON.parse(req.responseText),
-					"type":"imported"
+					"type":"importd"
 				},e.origin);
 			}
 		};
@@ -34,7 +34,7 @@ window.addEventListener("message",function (e) {
 				alert(req.responseText);
 				window.parent.postMessage({
 					"result":"complete",
-					"type":"exported"
+					"type":"exportd"
 				},e.origin);
 			}
 		}
@@ -59,6 +59,21 @@ window.addEventListener("message",function (e) {
 				c.path=info.loc;
 				c.type="link";
 				c.value=v.url;
+				if (!v.name) {
+					return undefined;
+				}
+				if (bmkptr.value[v.name]) {
+					if (confirm(v.name+"\n북마크가 이미 존재합니다.\n덮어쓰시겠습니까?")) {
+						
+					}
+					else {
+						while(bmkptr.value[(v.name=prompt("새 이름",v.name))]) {
+							if (!v.name) {
+								return undefined;
+							}
+						}
+					}
+				}
 				bmkptr.value[v.name]=c;
 				bmkptr.data.order.push(v.name);
 			});
@@ -74,6 +89,10 @@ window.addEventListener("message",function (e) {
 				c.path=info.loc;
 				c.type="folder";
 				c.value={};
+				if (bmkptr.value[v.name]) {
+					alert("이미 "+v.name+" 폴더가 있습니다.");
+					return undefined;
+				}
 				bmkptr.value[v.name]=c;
 				bmkptr.data.order.push(v.name);
 			});
@@ -192,7 +211,7 @@ window.addEventListener("message",function (e) {
 		console.log("setted");
 		window.parent.postMessage({
 			"bmk":bmk,
-			"type":"changed"
+			"type":"changd"
 		},e.origin);
 	}
 });
