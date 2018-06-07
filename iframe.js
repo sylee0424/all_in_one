@@ -63,11 +63,11 @@ window.addEventListener("message",function (e) {
 					return undefined;
 				}
 				if (bmkptr.value[v.name]) {
-					if (confirm(v.name+"\n북마크가 이미 존재합니다.\n덮어쓰시겠습니까?")) {
+					if (confirm(v.name+" is already exist.\noverwrite it?")) {
 						
 					}
 					else {
-						while(bmkptr.value[(v.name=prompt("새 이름",v.name))]) {
+						while(bmkptr.value[(v.name=prompt("new name",v.name))]) {
 							if (!v.name) {
 								return undefined;
 							}
@@ -90,7 +90,7 @@ window.addEventListener("message",function (e) {
 				c.type="folder";
 				c.value={};
 				if (bmkptr.value[v.name]) {
-					alert("이미 "+v.name+" 폴더가 있습니다.");
+					alert(v.name+" is already exist.");
 					return undefined;
 				}
 				bmkptr.value[v.name]=c;
@@ -142,7 +142,7 @@ window.addEventListener("message",function (e) {
 							bmkptr.value[v.data.name]=v;
 						}
 						else if (v.type=="folder") {
-							var a="temp_link_"+v.data.name+"#"+(new Date()).getTime();
+							var a="temp_link_"+v.data.name+"@"+(new Date()).getTime();
 							v.path=info.loc;
 							bmkptr.value[a]=bmkptr.value[v.data.name];
 							bmkptr.value[v.data.name]=v;
@@ -151,7 +151,7 @@ window.addEventListener("message",function (e) {
 					}
 					else if (bmkptr.value[v.data.name].type=="folder") {
 						if (v.type=="link") {
-							var a="temp_link_"+v.data.name+"#"+(new Date()).getTime();
+							var a="temp_link_"+v.data.name+"@"+(new Date()).getTime();
 							v.path=info.loc;
 							bmkptr.value[a]=v;
 							bmkptr.data.order.push(a);
@@ -199,8 +199,17 @@ window.addEventListener("message",function (e) {
 		}
 		else if (info.act.match("change")) {
 			info.data.forEach(function (v) {
-				if (bmkptr.value[v.name]) {
+				if (!v.name) {
 					return undefined;
+				}
+				if (bmkptr.value[v.name]) {
+					if (!confirm(v.name+" is already exist.\noverwrite it?")) {
+						while(bmkptr.value[(v.name=prompt("new name",v.name))]) {
+							if (!v.name) {
+								return undefined;
+							}
+						}
+					}
 				}
 				bmkptr.value[v.name]=bmkptr.value[v.pname];
 				bmkptr.data.order.splice(bmkptr.data.order.indexOf(v.pname),1,v.name);
@@ -227,14 +236,14 @@ function mergebmk(origin,target) {
 				}
 				else if (target.value[a].type="folder") {
 					target.value[a].path=origin.value[a].path;
-					origin.value["temp_link_"+a+"#"+(new Date()).getTime()]=origin.value[a];
+					origin.value["temp_link_"+a+"@"+(new Date()).getTime()]=origin.value[a];
 					origin.value[a]=target.value[a];
 				}
 			}
 			else if (origin.value[a].type="folder") {
 				if (target.value[a].type="link") {
 					target.value[a].path=origin.value[a].path;
-					origin.value["temp_link_"+a+"#"+(new Date()).getTime()]=target.value[a];
+					origin.value["temp_link_"+a+"@"+(new Date()).getTime()]=target.value[a];
 				}
 				else if (target.value[a].type="folder") {
 					mergebmk(origin.value[a],target.value[a]);
