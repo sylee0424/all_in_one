@@ -6,35 +6,62 @@
 // @exclude         http*://psydel.000webhostapp.com/iframe/
 // ==/UserScript==
 
-!function(t,e){"use strict";function n(){this.dispatchEvent(new CustomEvent("long-press",{bubbles:!0,cancelable:!0})),clearTimeout(o),console&&console.log&&console.log("long-press fired on "+this.outerHTML)}var o=null,u="ontouchstart"in t||navigator.MaxTouchPoints>0||navigator.msMaxTouchPoints>0,s=u?"touchstart":"mousedown",i=u?"touchcancel":"mouseout",a=u?"touchend":"mouseup",c=u?"touchmove":"mousemove";"initCustomEvent"in e.createEvent("CustomEvent")&&(t.CustomEvent=function(t,n){n=n||{bubbles:!1,cancelable:!1,detail:void 0};var o=e.createEvent("CustomEvent");return o.initCustomEvent(t,n.bubbles,n.cancelable,n.detail),o},t.CustomEvent.prototype=t.Event.prototype),e.addEventListener(s,function(t){var e=t.target,u=parseInt(e.getAttribute("data-long-press-delay")||"1500",10);o=setTimeout(n.bind(e),u)}),e.addEventListener(a,function(t){clearTimeout(o)}),e.addEventListener(i,function(t){clearTimeout(o)}),e.addEventListener(c,function(t){clearTimeout(o)})}(this,document);
+!function(t,e){
+	"use strict";
+	function n(){
+		this.dispatchEvent(
+			new CustomEvent("long-press",{
+				bubbles:!0,
+				cancelable:!0
+			})
+		),
+		clearTimeout(o);
+		if (console&&console.log) {
+			console.log("long-press fired on "+this.outerHTML);
+		}
+	}
+	var o=null;
+	var u="ontouchstart"in t||navigator.MaxTouchPoints>0||navigator.msMaxTouchPoints>0;
+	var s=u?"touchstart":"mousedown";
+	var i=u?"touchcancel":"mouseout";
+	var a=u?"touchend":"mouseup";
+	var c=u?"touchmove":"mousemove";
+	if ("initCustomEvent"in e.createEvent("CustomEvent")) {
+		t.CustomEvent=function(t,n){
+			if (!n) {
+				n={bubbles:false,cancelable:false,detail:undefined};
+			}
+			var o=e.createEvent("CustomEvent");
+			o.initCustomEvent(t,n.bubbles,n.cancelable,n.detail)
+			return o;
+		};
+		t.CustomEvent.prototype=t.Event.prototype;
+	}
+	e.addEventListener(s,function(t){
+		var e=t.target;
+		var u=(e.getAttribute("data-long-press-delay")||"1500")*1;
+		o=setTimeout(n.bind(e),u);
+	});
+	e.addEventListener(a,function(t){
+		clearTimeout(o);
+	});
+	e.addEventListener(i,function(t){
+		clearTimeout(o);
+	});
+	e.addEventListener(c,function(t){
+		clearTimeout(o);
+	})
+}(this,document);
 
-window.addEventListener("message",function (e) {
-	console.log(e);
-	if (e.data.type=="getted") {
-		extension.bmk=e.data.bmk;
-		show(document.getElementById("dir"));
-	}
-	else if (e.data.type=="setted") {
-		alert("setted");
-	}
-	else if (e.data.type=="importd") {
-		extension.bmk=e.data.bmk;
-		show(document.getElementById("dir"));
-	}
-	else if (e.data.type=="exportd") {
-		alert("exported");
-	}
-	else if (e.data.type=="changd") {
-		extension.bmk=e.data.bmk;
-		show(document.getElementById("dir"));
-	}
-});
+if (!window.dataurls) {
+	dataurls={};
+}
 
 var a=document.createElement("style");
 document.head.appendChild(a);
-a.sheet.insertRule("");
+a.innerText=".__link {color:#aa8888;}\n.__folder {color:#88aaaa;}\n.__checked {background-color:#2f2f2f;}\n.__extension {word-wrap:break-word;line-height:10px;vertical-align: middle;box-sizing:border-box;z-index:11;border:1px solid #000000;background-color:#ffffff;font-size:10px;}\n.__disabled {filter:invert(100%); border-color:#ffffff;}\n.__buttons.__extension {width:20px; height:20px; display:inline-block; font-size:10px;}\n.__checkbox {display:inline-block; width:10px; height:10px; border:1px solid #000000;}\n.__hided {display:none !important; }\n.__invisibled {visibility:hidden; !important;}\n.__innerimage {width:100%; height:100%;}\nlabel.__extension {width:70px; height:20px; display:inline-block;}\n#dir {height:20px;}\n#pastebmk {position:absolute; bottom:0px; left:0px; width:100px; height:25px;}\n#bmkmain {text-align:left; position:fixed; top:20px; left:20px; width:320px; height:500px; z-index:9999; overflow:auto; max-width:calc(100% - 40px); max-height:calc(100% - 40px);}\n#bmks.__copyactive {height:calc(100% - 130px);}\n#bmks {height:calc(100% - 100px); overflow:auto; font-size:15px; line-height:20px;}\nlabel {display:inline-block; border:1px solid #000000; margin-bottom:10px; min-width:90px;}\n#setover {z-index:12;}\n#actionbar {position:fixed; bottom:0px; left:0px; width:100%; height:40px;}\n#sidebarpad {z-index:0; position:absolute; bottom:0px; left:0px; width:38px; height:40px;}";
 
-a= document.createElement("iframe");
+a=document.createElement("iframe");
 a.id="bmkaction";
 a.style.display="none";
 document.body.appendChild(a);
@@ -86,7 +113,7 @@ window.extension = {
 				{
 					name:"val",
 					value:a.value
-				}]
+				}],
 				events:[{
 					name:"click",
 					value:extension.click
@@ -154,7 +181,7 @@ window.extension = {
 			info:{
 				act:"cut",
 				loc:document.getElementById("dir"),
-				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>(v.dataset))
+				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>v.dataset))
 			}
 		},"*");
 	},
@@ -165,7 +192,7 @@ window.extension = {
 			info:{
 				act:"copy",
 				loc:document.getElementById("dir"),
-				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>(v.dataset))
+				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>v.dataset))
 			}
 		},"*");
 	},
@@ -176,7 +203,7 @@ window.extension = {
 			info:{
 				act:"remove",
 				loc:document.getElementById("dir"),
-				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>(v.dataset))
+				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>v.dataset))
 			}
 		},"*");
 	},
@@ -195,6 +222,22 @@ window.extension = {
 		extension.bmkaction({
 			type:"export"
 		},"*");
+	},
+	
+	search: function (bmk,option) {
+		var arr=[]
+		for (var a in bmk.value) {
+			if (option.url&&bmk.value[a].type=="link"&&bmk.value[a].value.match(new RegExp(option.url.val,"i"))) {
+				arr.push(bmk.value[a]);
+			}
+			else if (option.name&&a.match(new RegExp(option.name.val,"i"))) {
+				arr.push(bmk.value[a]);
+			}
+			if (bmk.value[a].type=="folder") {
+				arr=arr.concat(extension.search(bmk.value[a],option));
+			}
+		}
+		return arr;
 	},
 	
 	sort: function () {
@@ -293,10 +336,10 @@ window.extension = {
 		if (item.childs) {
 			for (var i = 0; i < item.childs.length; i++) {
 				item.childs[i].target = div;
-				etfs.iptnds.f(item.childs[i]);
+				extension.iptnds(item.childs[i]);
 			}
 		}
-		if (item.name&&!item.image) {
+		if (!item.image&&item.name) {
 			div.appendChild(document.createTextNode(item.name));
 		}
 		if (item.events) {
@@ -319,9 +362,11 @@ window.extension = {
 		} else {
 			document.body.appendChild(div);
 		}
-	},
+	}
 	
-	intfc:[{
+};
+
+window.extension.intfc=[{
 		tag: "div",
 		name: "edit bmks",
 		image: dataurls.edit,
@@ -411,6 +456,17 @@ window.extension = {
 		events: [{
 			name: "click",
 			value: extension.goup
+		}]
+	},
+	{
+		tag: "div",
+		name: "hide",
+		classname: ["__buttons","__inedit"],
+		image: dataurls.hide,
+		id:"go_up",
+		events: [{
+			name: "click",
+			value: ()=>document.getElementById("bmkmain").classList.add("__hided")
 		}]
 	},
 	{
@@ -559,12 +615,61 @@ window.extension = {
 		tag: "div",
 		name: "loading...",
 		id: "bmks"
+	},
+	{
+		tag: "div",
+		id: "pastebmk",
+		classname: ["__hided"],
+		childs:[{
+			tag: "div",
+			name: "paste bmk",
+			image: dataurls.paste,
+			classname: ["__buttons"],
+			events: [{
+				name: "click",
+				value: extension.paste
+			}],
+			target: document.getElementById("pastebmk")
+		},
+		{
+			tag: "div",
+			name: "cancel",
+			image: dataurls.cancel,
+			classname: ["__buttons"],
+			events: [{
+				name: "click",
+				value: extension.cancel
+			}],
+			target: document.getElementById("pastebmk")
+		}]
 	}]
-};
+
+window.addEventListener("message",function (e) {
+	console.log(e);
+	if (e.data.type=="getted") {
+		extension.bmk=e.data.bmk;
+		show(document.getElementById("dir"));
+	}
+	else if (e.data.type=="setted") {
+		alert("setted");
+	}
+	else if (e.data.type=="importd") {
+		extension.bmk=e.data.bmk;
+		show(document.getElementById("dir"));
+	}
+	else if (e.data.type=="exportd") {
+		alert("exported");
+	}
+	else if (e.data.type=="changd") {
+		extension.bmk=e.data.bmk;
+		show(document.getElementById("dir"));
+	}
+});
 
 extension.iptnds({
 	tag:"div",
 	id:"bmkmain",
-	classname:["__hided"];
+	classname:["__hided"]
 });
+
 extension.intfc.map(v=>{v.target=document.getElementById("bmkmain"); return v;}).forEach(extension.iptnds);
