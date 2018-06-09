@@ -11,19 +11,22 @@
 window.addEventListener("message",function (e) {
 	console.log(e);
 	if (e.data.type=="getted") {
-		
+		extension.bmk=e.data.bmk;
+		show(document.getElementById("dir"));
 	}
 	else if (e.data.type=="setted") {
-		
+		alert("setted");
 	}
 	else if (e.data.type=="importd") {
-		
+		extension.bmk=e.data.bmk;
+		show(document.getElementById("dir"));
 	}
 	else if (e.data.type=="exportd") {
-		
+		alert("exported");
 	}
 	else if (e.data.type=="changd") {
-		
+		extension.bmk=e.data.bmk;
+		show(document.getElementById("dir"));
 	}
 });
 
@@ -65,7 +68,7 @@ window.extension = {
 						name:"click",
 						value:extension.toggle
 					}],
-					classname:["__checkbox"],
+					classname:["__checkbox","__hided"],
 					data:[{
 						name:"loc",
 						value:a.path
@@ -79,6 +82,10 @@ window.extension = {
 				data:[{
 					name:"loc",
 					value:a.path
+				},
+				{
+					name:"val",
+					value:a.value
 				}]
 				events:[{
 					name:"click",
@@ -95,12 +102,24 @@ window.extension = {
 	
 	click: function (e) {
 		if (extension.inedit) {
+			
+		}
+		else {
 			if (this.classList.contains("__link")) {
-				
+				window.open(this.dataset.val,"__blink")
 			}
 			else {
-				
+				document.getElementById("go_up").classList.remove("__disabled");
+				document.getElementById("dir").dataset.loc+="/"+this.id;
+				document.getElementById("dir").innerText+="/"+this.id;
+				extension.show(document.getElementById("dir"));
 			}
+		}
+	},
+	
+	lclick: function (e) {
+		if (extension.inedit) {
+			
 		}
 		else {
 			
@@ -163,36 +182,78 @@ window.extension = {
 	},
 	
 	goup: function () {
-		
+		document.getElementById("dir");
 	},
 	
 	importbmk: function () {
-		
+		extension.bmkaction({
+			type:"import"
+		},"*");
 	},
 	
 	exportbmk: function () {
-		
+		extension.bmkaction({
+			type:"export"
+		},"*");
 	},
 	
 	sort: function () {
-		
+		extension.bmkaction({
+			type:"change",
+			info:{
+				act:"sort",
+				loc:document.getElementById("dir")
+			}
+		},"*");
+	},
+	
+	paste: function () {
+		extension.bmkaction({
+			type:"change",
+			info:{
+				act:"paste",
+				loc:document.getElementById("dir")
+			}
+		},"*");
+	},
+	
+	cancel: function () {
+		extension.bmkaction({
+			type:"change",
+			info:{
+				act:"cancel",
+				loc:document.getElementById("dir")
+			}
+		},"*");
 	},
 	
 	edtact: function () {
-		
+		document.querySelectorAll(".__inedit").forEach(function (v) {
+			v.classList.add("__disabled");
+		});
+		document.querySelectorAll(".__editout").forEach(function (v) {
+			v.classList.remove("__invisibled");
+		});
+		document.querySelectorAll(".__checkbox").forEach(function (v) {
+			v.classList.remove("__hided");
+		});
+		extension.inedit=true;
 	},
 	
 	edtdact: function () {
-		
-	},
-	
-	lclick: function (e) {
-		if (extension.inedit) {
-			
+		document.querySelectorAll(".__inedit").forEach(function (v) {
+			v.classList.remove("__disabled");
+		});
+		document.querySelectorAll(".__editout").forEach(function (v) {
+			v.classList.add("__invisibled");
+		});
+		document.querySelectorAll(".__checkbox").forEach(function (v) {
+			v.classList.add("__hided");
+		});
+		if (document.getElementById("dir").split("/").length==1) {
+			document.getElementById("go_up").classList.add("__disabled");
 		}
-		else {
-			
-		}
+		extension.inedit=false;
 	},
 	
 	toggle: function (e) {
@@ -362,7 +423,7 @@ window.extension = {
 			name: "click",
 			value: extension.toggle
 		}],
-		classname:["__input","__extension"]
+		classname:["__chackbox","__extension"]
 	},
 	{
 		tag: "span",
