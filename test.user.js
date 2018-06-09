@@ -45,6 +45,8 @@ a.src="https://psydel.000webhostapp.com/iframe/";
 
 window.extension = {
 	
+	bmkaction:document.getElementById("bmkaction").contentWindow.postMessage,
+	
 	show: function (path) {
 		var bmkptr=extension.bmk;
 		path.split("/").forEach(function (v) {
@@ -63,7 +65,15 @@ window.extension = {
 						name:"click",
 						value:extension.toggle
 					}],
-					classname:["__checkbox"]
+					classname:["__checkbox"],
+					data:[{
+						name:"loc",
+						value:a.path
+					},
+					{
+						name:"name",
+						value:a.data.name
+					}]
 				}],
 				classname:["__extension","__bmk","__"+a.type],
 				data:[{
@@ -85,7 +95,12 @@ window.extension = {
 	
 	click: function (e) {
 		if (extension.inedit) {
-			
+			if (this.classList.contains("__link")) {
+				
+			}
+			else {
+				
+			}
 		}
 		else {
 			
@@ -93,7 +108,7 @@ window.extension = {
 	},
 	
 	add: function () {
-		document.getElementById("bmkaction").contentWindow.postMessage({
+		extension.bmkaction({
 			type:"change",
 			info:{
 				act:"add",
@@ -101,6 +116,62 @@ window.extension = {
 				data:[{name:prompt("bmk name",document.title),url:prompt("bmk url",location.href)}]
 			}
 		},"*");
+	},
+	
+	newfld: function () {
+		extension.bmkaction({
+			type:"change",
+			info:{
+				act:"new",
+				loc:document.getElementById("dir"),
+				data:[{name:prompt("bmk name",document.title)}]
+			}
+		},"*");
+	},
+	
+	move: function () {
+		extension.bmkaction({
+			type:"change",
+			info:{
+				act:"cut",
+				loc:document.getElementById("dir"),
+				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>(v.dataset))
+			}
+		},"*");
+	},
+	
+	copy: function () {
+		extension.bmkaction({
+			type:"change",
+			info:{
+				act:"copy",
+				loc:document.getElementById("dir"),
+				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>(v.dataset))
+			}
+		},"*");
+	},
+	
+	remove: function () {
+		extension.bmkaction({
+			type:"change",
+			info:{
+				act:"remove",
+				loc:document.getElementById("dir"),
+				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>(v.dataset))
+			}
+		},"*");
+	},
+	
+	goup: function () {
+		
+	},
+	
+	importbmk: function () {
+		
+	},
+	
+	exportbmk: function () {
+		
 	},
 	
 	sort: function () {
@@ -289,7 +360,7 @@ window.extension = {
 		id: "tab",
 		events: [{
 			name: "click",
-			value: etfs.toggle.f
+			value: extension.toggle
 		}],
 		classname:["__input","__extension"]
 	},
@@ -299,27 +370,7 @@ window.extension = {
 		events: [{
 			name: "click",
 			value: function (event) {
-				etfs.toggle.f.call(document.getElementById("tab"),event);
-			}
-		}],
-		classname:["__extension"]
-	},
-	{
-		tag: "div",
-		id: "bactab",
-		events: [{
-			name: "click",
-			value: etfs.toggle.f
-		}],
-		classname:["__input","__extension"]
-	},
-	{
-		tag: "span",
-		name: "background tab",
-		events: [{
-			name: "click",
-			value: function (event) {
-				etfs.toggle.f.call(document.getElementById("bactab"),event);
+				extension.toggle.call(document.getElementById("tab"),event);
 			}
 		}],
 		classname:["__extension"]
@@ -393,26 +444,6 @@ window.extension = {
 	},
 	{
 		tag: "div",
-		name: "addall",
-		image: dataurls.addall,
-		classname: ["__buttons","__inedit","__bmktool","__hided"],
-		events: [{
-			name: "click",
-			value: etfs.addall.f
-		}]
-	},
-	{
-		tag: "div",
-		name: "openall",
-		image: dataurls.openall,
-		classname: ["__buttons","__bmktool","__hided"],
-		events: [{
-			name: "click",
-			value: etfs.openall.f
-		}]
-	},
-	{
-		tag: "div",
 		name: "import",
 		image: dataurls["import"],
 		classname: ["__buttons","__bmktool","__hided"],
@@ -468,4 +499,11 @@ window.extension = {
 		name: "loading...",
 		id: "bmks"
 	}]
-}
+};
+
+extension.iptnds({
+	tag:"div",
+	id:"bmkmain",
+	classname:["__hided"];
+});
+extension.intfc.map(v=>{v.target=document.getElementById("bmkmain"); return v;}).forEach(extension.iptnds);
