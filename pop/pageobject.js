@@ -544,9 +544,19 @@ window.bufs = {
 
 	exportbmk: {
 		f: function() {
-			strgact({
-				type: "exportbmk",
-				loc: document.getElementById("dir").dataset.loc
+			extension.storage.local.get("bmks",function (c) {
+				if (c.bmks) {
+					var req = new XMLHttpRequest();
+					req.open('POST', "https://psydel.000webhostapp.com/",true);
+					req.onreadystatechange = function (aEvt) {
+						if (req.readyState == 4&&req.status == 200) {
+							notify(req.responseText);
+						}
+					}
+					var dats = new FormData();
+					dats.append("id",unescape(c.bmks));
+					req.send(dats);
+				}
 			});
 		},
 
@@ -577,9 +587,15 @@ window.bufs = {
 
 	importbmk: {
 		f: function() {
-			window.postMessage({
-				type: "importbmk"
-			}, location.href);
+			var req = new XMLHttpRequest();
+			req.open('GET', "https://psydel.000webhostapp.com/",true);
+			req.onreadystatechange = function (aEvt) {
+				if (req.readyState == 4&&req.status == 200) {
+					extension.storage.local.set({"bmks":escape(req.responseText)});
+					console.log("loaded");
+				}
+			};
+			req.send(null);
 		},
 
 		name: "importbmk"
