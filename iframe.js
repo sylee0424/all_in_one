@@ -202,7 +202,7 @@ window.addEventListener("message",function (e) {
 				if (!v.name) {
 					return undefined;
 				}
-				if (bmkptr.value[v.name]) {
+				if (bmkptr.value[v.name]&&v.name!=v.pname) {
 					if (!confirm(v.name+" is already exist.\noverwrite it?")) {
 						while(bmkptr.value[(v.name=prompt("new name",v.name))]) {
 							if (!v.name) {
@@ -212,8 +212,14 @@ window.addEventListener("message",function (e) {
 					}
 				}
 				bmkptr.value[v.name]=bmkptr.value[v.pname];
+				if (v.name!=v.pname) {
+					delete bmkptr.value[v.pname];
+				}
 				bmkptr.data.order.splice(bmkptr.data.order.indexOf(v.pname),1,v.name);
 				bmkptr.value[v.name].data.modified=(new Date()).getTime();
+				if (bmkptr.value[v.name].type=="link") {
+					bmkptr.value[v.name].value=v.url;
+				}
 			});
 		}
 		setlocalbmk(bmk);
@@ -266,7 +272,7 @@ function getlocalbmk() {
 		bmkstring+=localStorage.getItem("bmkbody"+i);
 	}
 	if (!bmklength) {
-		return {};
+		return null;
 	}
 	return JSON.parse(bmkstring);
 }
