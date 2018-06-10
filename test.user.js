@@ -39,7 +39,7 @@
 	}
 	e.addEventListener(s,function(t){
 		var e=t.target;
-		var u=(e.getAttribute("data-long-press-delay")||"1500")*1;
+		var u=(e.getAttribute("data-long-press-delay")||"750")*1;
 		o=setTimeout(n.bind(e),u);
 	});
 	e.addEventListener(a,function(t){
@@ -127,6 +127,50 @@ window.extension = {
 		});
 	},
 	
+	showlist: function (lists) {
+		lists.forEach(function (a) {
+			extension.iptnds({
+				tag:"label",
+				id:a.data.name,
+				name:a.data.name,
+				childs:[{
+					tag:"div",
+					id:"chk"+a.data.name,
+					events:[{
+						name:"click",
+						value:extension.toggle
+					}],
+					classname:["__checkbox","__hided"],
+					data:[{
+						name:"loc",
+						value:a.path
+					},
+					{
+						name:"name",
+						value:a.data.name
+					}]
+				}],
+				classname:["__extension","__bmk","__"+a.type],
+				data:[{
+					name:"loc",
+					value:a.path
+				},
+				{
+					name:"val",
+					value:a.value
+				}],
+				events:[{
+					name:"click",
+					value:extension.click
+				},
+				{
+					name:"long-press",
+					value:extension.lclick
+				}]
+			});
+		});
+	},
+	
 	click: function (e) {
 		if (extension.inedit) {
 			
@@ -151,6 +195,10 @@ window.extension = {
 		else {
 			
 		}
+	},
+	
+	bmkedit: function () {
+		
 	},
 	
 	add: function () {
