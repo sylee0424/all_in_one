@@ -1,1 +1,163 @@
 '["http://i1.ruliweb.com/mo/18/05/27/1639d07eea34b8183.gif","https://i2.ruliweb.com/mo/18/05/27/1639d0d693e4b8183.gif","http://i3.ruliweb.com/mo/18/05/27/1639d0d6ba24b8183.gif","http://i3.ruliweb.com/mo/18/05/27/1639d0d724f4b8183.gif","http://i3.ruliweb.com/mo/18/05/27/1639d0d746f4b8183.gif","http://i1.ruliweb.com/mo/18/05/27/1639d0ddddd4b8183.gif","http://i1.ruliweb.com/mo/18/05/27/1639d0de9e34b8183.gif","https://i2.ruliweb.com/mo/18/05/27/1639d0df4024b8183.gif","http://i3.ruliweb.com/mo/18/05/27/1639d0e32c54b8183.gif","http://i3.ruliweb.com/mo/18/05/27/1639d0e38c14b8183.gif","https://i2.ruliweb.com/mo/18/05/27/1639d0e3aee4b8183.gif","http://i3.ruliweb.com/mo/18/05/27/1639d0e78704b8183.gif","https://i2.ruliweb.com/mo/18/05/27/1639d0e7bc74b8183.gif","http://i3.ruliweb.com/mo/18/05/27/1639d0e80e74b8183.gif","http://i3.ruliweb.com/mo/18/05/27/1639d0ea2654b8183.gif","https://i2.ruliweb.com/mo/18/05/27/1639d0ea5bc4b8183.gif","https://i2.ruliweb.com/mo/18/05/27/1639d0f33f54b8183.gif","http://i3.ruliweb.com/mo/18/05/27/1639d0f3c6a4b8183.gif","http://i1.ruliweb.com/mo/18/05/27/1639d0f3e4a4b8183.gif","http://i3.ruliweb.com/mo/18/05/27/1639d0f418e4b8183.gif","https://i2.ruliweb.com/mo/18/05/27/1639d1109124b8183.gif","https://i2.ruliweb.com/mo/18/05/27/1639d110bf34b8183.gif","http://i3.ruliweb.com/mo/18/05/27/1639d110dac4b8183.gif"]'
+Welcome to FreeWebHostingArea.com!
+
+Dear user, your account psydel.freevar.com was successfully activated on ramses.freewha.com server.
+
+Your address is http://psydel.freevar.com and you can visit/update your site right now.
+
+Add an index page (examples: index.html or index.php) and put your files directly on root. No public_html folder required.
+
+Be sure that your account has minimum 1hit per month. Inactive accounts are deleted at the end of month.
+
+Account Manager:
+
+You're hosted on ramses.freewha.com server. Account Manager is located at http://psydel.freevar.com/cpanel.
+
+Username: psydel.freevar.com
+
+Password: lsy0307
+
+If you have accounts created on more than one server, see http://www.freewebhostingarea.com/members/.
+
+ 
+
+Some scripts require server path. Yours is /home/vhosts/psydel.freevar.com.
+
+Your Personal FTP Information:
+
+FTP Server/Host:
+
+psydel.freevar.com
+
+FTP Login/Username:
+
+psydel.freevar.com
+
+FTP PassWord:
+
+lsy0307
+
+To upload your files go to our Web based FTP client (recommended), located at http://psydel.freevar.com/ftp/.
+
+Once logged in, you will be able to create a new dir, new file, to upload a zip archive and have it unzipped automatically, to edit your files, to select files and download them as .zip, to copy, move, delete, rename, chmod (change permissions), search anything under your account, ability to see and edit dot files like .htaccess. With a normal ftp program you will not be able to do this.
+
+For a complete list of features see http://psydel.freevar.com/ftp/help.html.
+
+MySQL database Information:
+
+You will get a limited number of free databases per account. But you can create other accounts and get as many free databases as you want.
+
+ATTENTION!!! MySQL databases must be activated @ Account Manager >> Hit Create DB button.
+
+MySQL HostName is localhost only. We don't allow external connections.
+
+phpMyAdmin is located at http://psydel.freevar.com/pma/. Log in using MySQL username.
+
+PhpMyAdmin (PMA) is a tool that will help you to administer your database. You don't have privileges to create a database with PMA because, as said before, databases must be created @ Account Manager using Create DB button.
+
+Database details (db name, username) will be provided at Account Manager once you create the database.
+
+Other features at Account Manager
+
+One click Autoinstaller for PhpBB3, SMF, WordPress, Joomla, Drupal (with Clean URLs preenabled), Moodle.
+
+One click database backup & One click database import
+
+Manage DB button (available after you create a database) >> then choose Backup DB or Import DB buttons
+
+Configure PHP
+
+you can turn on/off Register Globals, Magic Quotes gpc, Allow_url_include variables.
+
+safe_mode is automatically turned off few hours after account creation.
+
+Reset Account
+
+useful if you want to delete all files/databases under your account.
+
+Fix Ownership
+
+some files are created with apache permissions (e.g. unpack an archive, php scripts) and you're not able to edit/delete them. This feature will fix permissions and you will be able to manipulate all files under your account.
+
+Free hit tracker (web counter)
+
+Sign up @ http://www.1FreeCounter.com then just insert the code into your pages.
+
+We have full support for mod_rewrite or dot files (.htaccess, .htpasswd).
+
+Attention!! A wrong .htaccess file can block your site and instead you will see a
+
+500 internal server error.
+
+ 
+
+With .htaccess you're able to set custom error pages.
+
+ErrorDocument 404 /404.html
+ErrorDocument 403 /403.html
+
+404.html - not found errors
+
+403.html - forbidden errors
+
+ 
+
+enable indexes using:
+
+Options +Indexes
+IndexOptions FancyIndexing
+
+ 
+
+turn on/off php variables:
+
+php_flag display_errors On
+
+php_flag register_globals On
+
+ 
+
+block sites using:
+
+RewriteEngine on
+RewriteCond %{HTTP_REFERER} ^http://.*badsite\.com [NC,OR]
+RewriteCond %{HTTP_REFERER} ^http://.*otherbadsite\.com [NC]
+RewriteRule .* - [F]
+
+note the OR if you want to add block more than one domain.
+
+ 
+
+block IPs using:
+
+order allow,deny
+deny from 192.168.0.101
+deny from 10.0.0.
+allow from all
+
+first example 192.168.0.101, you block that particular ip
+
+second example 10.0.0., you block all ips starting with 10.0.0.
+
+ 
+
+block an ISP or a particular user coming from an ISP:
+
+order allow,deny
+deny from bad-isp.com
+deny from user.other-bad-isp.com
+allow from all
+
+Attention!! Use a very hard to guess password to prevent your account being hacked. Also, install only new and optimized scripts. Take care with full permissions 777!!! For security reasons, set permissions for script configuration file to 644.
+
+You will find a lot of useful information if you check our FAQ Section.
+
+For latest news follow us at TWITTER.
+
+Our service is ad free for small sites. To support us so we can offer a quality service, upgrade your account at http://www.freewebhostingarea.com/removeads.html.
+
+ 
+
+Thank you for using our services,
+
+Free Web Hosting Area.com
