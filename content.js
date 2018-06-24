@@ -323,7 +323,7 @@ window.addEventListener("message",contentonmessage);
 
 extension.runtime.onMessage.addListener(topagescript);
 
-addscript([/*"pageobject.js",*/"test.user.js","pagescript.js"],true);
+addscript([/*"pageobject.js","pagescript.js",*/"test.user.js"],true);
 
 extension.storage.local.get("setting",function (c) {
 	if (c.setting) {
