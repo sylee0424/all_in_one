@@ -301,7 +301,7 @@ a.appendChild(document.createTextNode(".__textfield {width:100%;}"
 +"\n#bmkmain label {display:inline-block; border:1px solid #000000; margin-bottom:10px; min-width:90px;}"
 +"\n#bmks span {font-size:15px;height:20px;}"
 +"\n#bmks input {font-size:15px;height:20px;width:200px}"
-+"\n#bmkmain #bmkname {border:0px solid #000000;}"
++"\n#bmktoggle {position:fixed; left:0px; bottom:0px; width:50px; height:50px; opacity:0.5;}"
 +"\n#bmkmain #bmkname {border:0px solid #000000;}"
 +"\n#bmkmain #bmkpath {border:0px solid #000000;}"));
 
@@ -569,6 +569,102 @@ var extension = {
 		});
 	},
 
+	bmksearch: function () {
+		var bmks=document.getElementById("bmks");
+		while (bmks.firstChild) {
+			bmks.removeChild(bmks.firstChild);
+		}
+		var bmkptr = extension.bmk;
+		document.getElementById("dir").dataset.loc.split("/").forEach(function (val) {
+			bmkptr = bmkptr.value[val];
+		});
+		extension.iptnds({
+			tag:"label",
+			id:"bmkname",
+			childs:[{
+				tag:"span",
+				name:"name",
+				classname:["__left"]
+			},
+			{
+				tag:"input",
+				attributes:[{
+					name:"type",
+					value:"text"
+				}],
+				classname:["__right"]
+			}],
+			classname:["__textfield"],
+			target:bmks
+		});
+		extension.iptnds({
+			tag:"br",
+			target:bmks
+		});
+		if (bmk.classList.contains("__link")) {
+			extension.iptnds({
+				tag:"label",
+				id:"bmkpath",
+				childs:[{
+					tag:"span",
+					name:"url",
+					classname:["__left"]
+				},
+				{
+					tag:"input",
+					attributes:[{
+						name:"type",
+						value:"text"
+					}],
+					classname:["__right"]
+				}],
+				classname:["__textfield"],
+				target:bmks
+			});
+		}
+		extension.iptnds({
+			tag:"div",
+			id:"changeconfirm",
+			name:"confirm",
+			classname:["__left","__bottom","__buttons"],
+			data:[{
+				name:"loc",
+				value:bmk.dataset.loc
+			},
+			{
+				name:"name",
+				value:bmk.id
+			}],
+			events:[{
+				name:"click",
+				value:function () {
+					document.getElementById("go_up").classList.remove("__disabled");
+					document.getElementById("dir").dataset.loc+="/searchresult";
+					document.getElementById("dir").textContent+="/searchresult";
+					if (!document.getElementById("bmkname")&&!document.getElementById("bmkpath")) {
+						return undefined;
+					}
+					extension.showlist(extension.search(bmkptr,{
+						name:document.getElementById("bmkname"),
+						url:document.getElementById("bmkpath")
+					}));
+				}
+			}],
+			target:bmks
+		});
+		extension.iptnds({
+			tag:"div",
+			id:"changecancel",
+			name:"cancel",
+			classname:["__right","__bottom","__buttons"],
+			events:[{
+				name:"click",
+				value:()=>extension.show(document.getElementById("dir").dataset.loc)
+			}],
+			target:bmks
+		});
+	},
+
 	add: function () {
 		extension.bmkaction({
 			type:"change",
@@ -662,10 +758,10 @@ var extension = {
 	search: function (bmk,option) {
 		var arr=[]
 		for (var a in bmk.value) {
-			if (option.url&&bmk.value[a].type=="link"&&bmk.value[a].value.match(new RegExp(option.url.val,"i"))) {
+			if (option.url&&bmk.value[a].type=="link"&&bmk.value[a].value.match(new RegExp(option.url,"i"))) {
 				arr.push(bmk.value[a]);
 			}
-			else if (option.name&&a.match(new RegExp(option.name.val,"i"))) {
+			else if (option.name&&a.match(new RegExp(option.name,"i"))) {
 				arr.push(bmk.value[a]);
 			}
 			if (bmk.value[a].type=="folder") {
@@ -1162,6 +1258,16 @@ extension.iptnds({
 	tag:"div",
 	id:"bmkmain",
 	classname:["__hided"]
+});
+
+extension.iptnds({
+	tag:"div",
+	name:"tgl",
+	id:"bmktoggle",
+	events:[{
+		name:"click",
+		value:()=>(document.getElementById("bmkmain").classList.remove("__hided"))
+	}]
 });
 
 extension.intfc.map(v=>{v.target=document.getElementById("bmkmain"); return v;}).forEach(extension.iptnds);

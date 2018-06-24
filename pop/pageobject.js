@@ -1004,6 +1004,7 @@ window.strgact = function (changeinfo) {
 				bmkptr.value[val.title].data.modified = b;
 				bmkptr.value[val.title].data.croped=false;
 				bmkptr.value[val.title].data.order=[];
+				bmkptr.value[val.title].data.name=val.title;
 				bmkptr.value[val.title].type = val.type;
 				if (val.type=="link") {
 					bmkptr.value[val.title].value = val.url;
@@ -1045,6 +1046,7 @@ window.strgact = function (changeinfo) {
 					return undefined;
 				}
 				bmkptr.value[val.title]=bmkptr.value[val.ptitle];
+				bmkptr.value[val.title].data.name=val.title;
 				if (val.title!=val.ptitle) {
 					delete bmkptr.value[val.ptitle];
 					bmkptr.data.order[bmkptr.data.order.indexOf(val.ptitle)]=val.title;
@@ -1089,6 +1091,7 @@ window.strgact = function (changeinfo) {
 					return undefined;
 				}
 				bmkptr.value[val.title]=bmkptr.value[val.ptitle];
+				bmkptr.value[val.title].data.name=val.title;
 				if (val.title!=val.ptitle) {
 					delete bmkptr.value[val.ptitle];
 					bmkptr.data.order[bmkptr.data.order.indexOf(val.ptitle)]=val.title;
