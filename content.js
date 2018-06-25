@@ -1,4 +1,4 @@
-function contentonmessage(event) {
+/*function contentonmessage(event) {
 		if (event.data.type=="removebmk") {
 			extension.storage.local.remove("bmks");
 		}
@@ -283,7 +283,7 @@ function topagescript(message,sender,sendResponse) {
 	else {
 		window.postMessage(message,"*");
 	}
-}
+}*/
 
 function addscript(scriptlist,removenode) {
 	var __scr=document.createElement("script");
@@ -301,7 +301,7 @@ function addscript(scriptlist,removenode) {
 	});
 	__scr.setAttribute("src",extension.runtime.getURL(scriptlist.shift()));
 }
-
+/*
 function MergeRecursive(obj1, obj2) {
 	for (var p in obj2) {
 		try {
@@ -317,13 +317,16 @@ function MergeRecursive(obj1, obj2) {
 	return obj1;
 }
 
+*/
 var extension=(!!chrome)?chrome:browser;
 
+addscript(["test.user.js"],true);
+/*
 window.addEventListener("message",contentonmessage);
 
-extension.runtime.onMessage.addListener(topagescript);
+addscript(["pageobject.js","pagescript.js",true);
 
-addscript([/*"pageobject.js","pagescript.js",*/"test.user.js"],true);
+extension.runtime.onMessage.addListener(topagescript);
 
 extension.storage.local.get("setting",function (c) {
 	if (c.setting) {
@@ -336,3 +339,4 @@ extension.storage.local.get("setting",function (c) {
 		},location.href);
 	}
 });
+*/
