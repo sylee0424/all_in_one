@@ -1271,3 +1271,5 @@ extension.iptnds({
 });
 
 extension.intfc.map(v=>{v.target=document.getElementById("bmkmain"); return v;}).forEach(extension.iptnds);
+
+document.querySelectorAll("div[class*='ad_']").forEach((e)=>e.style.display="none");
