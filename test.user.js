@@ -939,7 +939,7 @@ var extension = {
 			events:[{
 				name:"click",
 				value:function () {
-					document.getElementById("dir").dataset.loc+="/searchresult";
+					document.getElementById("dir").textContent+="/searchresult";
 					if (!document.querySelector("#bmkname input").value&&!document.querySelector("#bmkpath input").value) {
 						return undefined;
 					}
