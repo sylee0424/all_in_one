@@ -40,6 +40,307 @@ NodeList.values||(NodeList.prototype.values = function* () {
 	}
 });
 
+var iframe=(function () {/*
+	window.addEventListener("message",function (e) {
+		if (e.data.type.match("getbmk")) {
+			window.parent.postMessage({
+				"bmk":getlocalbmk(),
+				"type":"getted",
+				"croped":localStorage.getItem("croped")&&true
+			},e.origin);
+		}
+		else if (e.data.type.match("setbmk")) {
+			setlocalbmk(e.data.bmk);
+			window.parent.postMessage({
+				"result":"complete",
+				"type":"setted"
+			},e.origin);
+		}
+		else if (e.data.type.match("import")) {
+			var req = new XMLHttpRequest();
+			req.open('GET',"https://psydel.000webhostapp.com/",true);
+			req.onreadystatechange = function (aEvt) {
+				if (req.readyState == 4&&req.status == 200) {
+					setlocalbmk(JSON.parse(req.responseText));
+					window.parent.postMessage({
+						"bmk":JSON.parse(req.responseText),
+						"type":"importd",
+						"croped":localStorage.getItem("croped")&&true
+					},e.origin);
+				}
+			};
+			req.send(null);
+		}
+		else if (e.data.type.match("export")) {
+			var req = new XMLHttpRequest();
+			req.open('POST',"https://psydel.000webhostapp.com/",true);
+			req.onreadystatechange = function (aEvt) {
+				if (req.readyState == 4&&req.status == 200) {
+					alert(req.responseText);
+					window.parent.postMessage({
+						"result":"complete",
+						"type":"exportd"
+					},e.origin);
+				}
+			}
+			var dats = new FormData();
+			dats.append("id",JSON.stringify(getlocalbmk()));
+			req.send(dats);
+		}
+		else if (e.data.type.match("change")) {
+			var bmk=getlocalbmk();
+			var bmkptr=bmk;
+			var info=e.data.info;
+			info.loc.split("/").forEach(function (v) {
+				bmkptr=bmkptr.value[v];
+			});
+			if (info.act.match("add")) {
+				info.data.forEach(function (v) {
+					var c={};
+					c.data={};
+					c.data.created=(new Date()).getTime();
+					c.data.modified=(new Date()).getTime();
+					c.data.name=v.name;
+					c.path=info.loc;
+					c.type="link";
+					c.value=v.url;
+					if (!v.name) {
+						return undefined;
+					}
+					if (bmkptr.value[v.name]) {
+						if (confirm(v.name+" is already exist.\noverwrite it?")) {
+							
+						}
+						else {
+							while(bmkptr.value[(v.name=prompt("new name",v.name))]) {
+								if (!v.name) {
+									return undefined;
+								}
+							}
+						}
+					}
+					bmkptr.value[v.name]=c;
+					bmkptr.data.order.push(v.name);
+				});
+			}
+			else if (info.act.match("new")) {
+				info.data.forEach(function (v) {
+					var c={};
+					c.data={};
+					c.data.created=(new Date()).getTime();
+					c.data.modified=(new Date()).getTime();
+					c.data.name=v.name;
+					c.data.order=[];
+					c.path=info.loc;
+					c.type="folder";
+					c.value={};
+					if (bmkptr.value[v.name]) {
+						alert(v.name+" is already exist.");
+						return undefined;
+					}
+					bmkptr.value[v.name]=c;
+					bmkptr.data.order.push(v.name);
+				});
+			}
+			else if (info.act.match("remove")) {
+				info.data.forEach(function (v) {
+					bmkptr=bmk;
+					v.loc.split("/").forEach(function (a) {
+						bmkptr=bmkptr.value[a];
+					});
+					delete bmkptr.value[v.name];
+					bmkptr.data.modified=(new Date()).getTime();
+					bmkptr.data.order.splice(bmkptr.data.order.indexOf(v.name),1);
+				});
+			}
+			else if (info.act.match("move")) {
+				var cr=JSON.parse(localStorage.getItem("croped"))||[];
+				info.data.forEach(function (v) {
+					bmkptr=bmk;
+					v.loc.split("/").forEach(function (a) {
+						bmkptr=bmkptr.value[a];
+					});
+					cr.push(bmkptr.value[v.name]);
+					delete bmkptr.value[v.name];
+					bmkptr.data.modified=(new Date()).getTime();
+					bmkptr.data.order.splice(bmkptr.data.order.indexOf(v.name),1);
+				});
+				localStorage.setItem("croped",JSON.stringify(cr));
+			}
+			else if (info.act.match("copy")) {
+				var cr=JSON.parse(localStorage.getItem("croped"))||[];
+				info.data.forEach(function (v) {
+					bmkptr=bmk;
+					v.loc.split("/").forEach(function (a) {
+						bmkptr=bmkptr.value[a];
+					});
+					cr.push(bmkptr.value[v.name]);
+				});
+				localStorage.setItem("croped",JSON.stringify(cr));
+			}
+			else if (info.act.match("paste")) {
+				var cr=JSON.parse(localStorage.getItem("croped"))||[];
+				cr.forEach(function (v) {
+					if (bmkptr.value[v.data.name]) {
+						if (bmkptr.value[v.data.name].type=="link") {
+							if (v.type=="link") {
+								v.path=info.loc;
+								bmkptr.value[v.data.name]=v;
+							}
+							else if (v.type=="folder") {
+								var a="temp_link_"+v.data.name+"@"+(new Date()).getTime();
+								v.path=info.loc;
+								bmkptr.value[a]=bmkptr.value[v.data.name];
+								bmkptr.value[v.data.name]=v;
+								bmkptr.data.order.push(a);
+							}
+						}
+						else if (bmkptr.value[v.data.name].type=="folder") {
+							if (v.type=="link") {
+								var a="temp_link_"+v.data.name+"@"+(new Date()).getTime();
+								v.path=info.loc;
+								bmkptr.value[a]=v;
+								bmkptr.data.order.push(a);
+							}
+							else if (v.type=="folder") {
+								v.path=info.loc;
+								mergebmk(bmkptr.value[v.data.name],v);
+							}
+						}
+					}
+					else {
+						bmkptr.value[v.data.name]=v;
+						bmkptr.value[v.data.name].data.modified=(new Date()).getTime();
+						bmkptr.value[v.data.name].path=info.loc;
+						bmkptr.data.order.push(v.data.name);
+					}
+				});
+				localStorage.removeItem("croped");
+			}
+			else if (info.act.match("cancel")) {
+				info.data.forEach(function (v) {
+					var cr=JSON.parse(localStorage.getItem("croped"))||[];
+					cr.forEach(function (v) {
+						bmkptr=bmk;
+						v.loc.split("/").forEach(function (a) {
+							bmkptr=bmkptr.value[a];
+						});
+						bmkptr.value[v.data.name]=v;
+					});
+					localStorage.removeItem("croped");
+				});
+			}
+			else if (info.act.match("sort")) {
+				var Temporal_Bookmark = {};
+				var Bookmark_Folders = [];
+				var Bookmark_Links = [];
+				Object.keys(bmkptr.value).forEach(function (val) {
+					if (bmkptr.value[val].type == "folder") {
+						Bookmark_Folders.push(val);
+					} else {
+						Bookmark_Links.push(val);
+					}
+				});
+				Bookmark_Folders.sort();
+				Bookmark_Links.sort();
+				bmkptr.data.order=[].concat(Bookmark_Folders,Bookmark_Links);
+			}
+			else if (info.act.match("change")) {
+				info.data.forEach(function (v) {
+					if (!v.name) {
+						return undefined;
+					}
+					if (bmkptr.value[v.name]&&v.name!=v.pname) {
+						if (!confirm(v.name+" is already exist.\noverwrite it?")) {
+							while(bmkptr.value[(v.name=prompt("new name",v.name))]) {
+								if (!v.name) {
+									return undefined;
+								}
+							}
+						}
+					}
+					bmkptr.value[v.name]=bmkptr.value[v.pname];
+					if (v.name!=v.pname) {
+						delete bmkptr.value[v.pname];
+					}
+					bmkptr.data.order.splice(bmkptr.data.order.indexOf(v.pname),1,v.name);
+					bmkptr.value[v.name].data.modified=(new Date()).getTime();
+					if (bmkptr.value[v.name].type=="link") {
+						bmkptr.value[v.name].value=v.url;
+					}
+				});
+			}
+			setlocalbmk(bmk);
+			console.log("setted");
+			window.parent.postMessage({
+				"bmk":bmk,
+				"type":"changd",
+				"croped":localStorage.getItem("croped")&&true
+			},e.origin);
+		}
+	});
+
+	function mergebmk(origin,target) {
+		var order=[].concat(origin.data.order,target.data.order);
+		for (var a in target.value) {
+			if (origin.value[a]) {
+				if (origin.value[a].type="link") {
+					if (target.value[a].type="link") {
+						target.value[a].path=origin.value[a].path;
+						origin.value[a]=target.value[a];
+					}
+					else if (target.value[a].type="folder") {
+						target.value[a].path=origin.value[a].path;
+						origin.value["temp_link_"+a+"@"+(new Date()).getTime()]=origin.value[a];
+						origin.value[a]=target.value[a];
+					}
+				}
+				else if (origin.value[a].type="folder") {
+					if (target.value[a].type="link") {
+						target.value[a].path=origin.value[a].path;
+						origin.value["temp_link_"+a+"@"+(new Date()).getTime()]=target.value[a];
+					}
+					else if (target.value[a].type="folder") {
+						mergebmk(origin.value[a],target.value[a]);
+					}
+				}
+			}
+			else {
+				origin.value[a]=target.value[a];
+				origin.value[a].path=origin.path+(origin.path?"/":"")+origin.data.name;
+			}
+		}
+		origin.data.order=order;
+		origin.data.modified=(new Date()).getTime();
+	}
+
+	function getlocalbmk() {
+		var bmklength=Number(localStorage.getItem("bmklength"));
+		var bmkstring="";
+		for (var i=0;i<bmklength;i++) {
+			bmkstring+=localStorage.getItem("bmkbody"+i);
+		}
+		if (!bmklength) {
+			return null;
+		}
+		return JSON.parse(bmkstring);
+	}
+
+	function setlocalbmk(bmk) {
+		var bmkstring=JSON.stringify(bmk);
+		var bmklength=0;
+		while (bmkstring) {
+			localStorage.setItem("bmkbody"+bmklength,bmkstring.substr(0,4000));
+			bmkstring=bmkstring.substr(4000);
+			bmklength++;
+		}
+		localStorage.setItem("bmklength",bmklength);
+	}
+
+	document.head.removeChild(document.getElementsByTagName("script")[0]);
+*/}).toString().match(/[^]*\/\*([^]*)\*\/\}$/)[1];
+/*from https://stackoverflow.com/questions/805107/creating-multiline-strings-in-javascript#805755 */
+
 !function(t,e){
 	"use strict";
 	function n(){
@@ -113,6 +414,18 @@ var dataurls= {
 	  + "AAAASUVORK5CYII=",
 
 	"sort"		:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjw"
+	  + "v8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAALqSURBVGhD7ZlL6A1RHMePdyTylrxSZIGtPBOyETuKkvKK9E+i2MjKY2WFjSXWIiWPLDzzihQ"
+	  + "bFIWFDYmV5+d7zj11mu7Mnbn3/OfOn/nUp/v73f+/e8+3uTNz5hxTU1NTmAm4BtdVVI1NY8xkBX7DPxVXY1yOqdzBD6jUKyuqxqYx3sJU3uFl"
+	  + "V1YajVFjTaUOUjJRgwxovHaDqEGe4GFXlk7UIF/wvCtTmYVH8XjDPRiD0oNsx9/or/+fcCh2StQgn/GsK3MxBAe7smOiBtmJ811ZOlGDdJOoQ"
+	  + "U7ielemounEI3zcxGs4BtshapA8J/sSvIrXA++hgqgei+1QepDeog7SjDxB+uF0nJHiNByFw7EIpQfZh+EDUZq/cCnmpfQgE3Eb7sBdeCBFTV"
+	  + "2KHJXSg/QWdZBm5AkyBfdj8qe0F/Vza+YWHI1ZlB6kB5ud3K1UmCzaDrIZL+JI2zmSQRbgXdRlNWQqJi+7Wepy3Yq2g2jO9BMfog8TBlEI9e9"
+	  + "xvN7oZdoOIjahwmgSqDA+yMJGrRAzsQw6CiLCMN/xOWaF0MrlfbyB4cQxr5pwrsIkHQcRPow/MbOOhAbxAJNT+DSf4ZvAV7gBk0QJInyYMn9O"
+	  + "IdGCCJ3guk90g6hBukkdpGr8n0GO4SlXWs7gIVdaLuFuV5r+qEUFbY2JYfgUl9nOPZe8xHm2M2Y2vsDJtjNmMeqe5GcNa1GziIG2M2YrXnGlp"
+	  + "VCQ26gP96gOj1Y4RdEAdE9ReKH5lXo9TAkNVP1G2xmzGtXrfaH/Uz/XdsYcRPU+2GnU93kKBbmAN11p0VbXOVdaXuMJV9qlUH2RpuxCz+E/0N"
+	  + "/MdAS0Buzv0otQA51jO3ckdV+aZDsXTPuEWmYVR/CtKy2FgmixOXz8HIH+g4UGO8iVFq1R6SfmGdd49ST75OQy/Ls+J1zz0l5M+IzSMkhf2Az"
+	  + "V+fMRMzdDteXbF7anv2Lm9rTQIdcRCTfpq6TGVsYzT03NP4QxfwEEVaw9vxJoVgAAAABJRU5ErkJggg==",
+
+	"all"		:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjw"
 	  + "v8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAALqSURBVGhD7ZlL6A1RHMePdyTylrxSZIGtPBOyETuKkvKK9E+i2MjKY2WFjSXWIiWPLDzzihQ"
 	  + "bFIWFDYmV5+d7zj11mu7Mnbn3/OfOn/nUp/v73f+/e8+3uTNz5hxTU1NTmAm4BtdVVI1NY8xkBX7DPxVXY1yOqdzBD6jUKyuqxqYx3sJU3uFl"
 	  + "V1YajVFjTaUOUjJRgwxovHaDqEGe4GFXlk7UIF/wvCtTmYVH8XjDPRiD0oNsx9/or/+fcCh2StQgn/GsK3MxBAe7smOiBtmJ811ZOlGDdJOoQ"
@@ -284,8 +597,8 @@ a.appendChild(document.createTextNode(".__textfield {width:100%;}"
 +"\n.__right {position:absolute; right:3px;}"
 +"\n.__link {color:#aa8888;}"
 +"\n.__folder {color:#88aaaa;}"
-+"\n.__checked {background-color:#2f2f2f;}"
-+"\n.__extension {word-wrap:break-word;line-height:10px;vertical-align: middle;box-sizing:border-box;z-index:11;border:1px solid #000000;background-color:#ffffff;font-size:10px;}"
++"\n.__checked {background-color:#2f2f2f !important;}"
++"\n.__extension {word-wrap:break-word;line-height:10px;vertical-align: middle;box-sizing:border-box;z-index:11;border:1px solid #000000;font-size:10px;}"
 +"\n.__disabled {filter:invert(100%); border-color:#ffffff;}"
 +"\n.__buttons.__extension {width:20px; height:20px; display:inline-block; font-size:10px;}"
 +"\n.__checkbox {display:inline-block; width:10px; height:10px; border:1px solid #000000;}"
@@ -312,7 +625,7 @@ document.body.appendChild(a);
 a.addEventListener("load",function () {
 	this.contentWindow.postMessage({
 		a:true,
-		b:'data:text/javascript,function mergebmk(e,a){var t=[].concat(e.data.order,a.data.order);for(var n in a.value)e.value[n]?(e.value[n].type="link")?(a.value[n].type="link")?(a.value[n].path=e.value[n].path,e.value[n]=a.value[n]):(a.value[n].type="folder")&&(a.value[n].path=e.value[n].path,e.value["temp_link_"+n+"@"+(new Date).getTime()]=e.value[n],e.value[n]=a.value[n]):(e.value[n].type="folder")&&((a.value[n].type="link")?(a.value[n].path=e.value[n].path,e.value["temp_link_"+n+"@"+(new Date).getTime()]=a.value[n]):(a.value[n].type="folder")&&mergebmk(e.value[n],a.value[n])):(e.value[n]=a.value[n],e.value[n].path=e.path+(e.path?"/":"")+e.data.name);e.data.order=t,e.data.modified=(new Date).getTime()}function getlocalbmk(){for(var e=Number(localStorage.getItem("bmklength")),a="",t=0;t<e;t++)a+=localStorage.getItem("bmkbody"+t);return e?JSON.parse(a):null}function setlocalbmk(e){for(var a=JSON.stringify(e),t=0;a;)localStorage.setItem("bmkbody"+t,a.substr(0,4e3)),a=a.substr(4e3),t++;localStorage.setItem("bmklength",t)}window.addEventListener("message",function(e){if(e.data.type.match("getbmk"))window.parent.postMessage({bmk:getlocalbmk(),type:"getted"},e.origin);else if(e.data.type.match("setbmk"))setlocalbmk(e.data.bmk),window.parent.postMessage({result:"complete",type:"setted"},e.origin);else if(e.data.type.match("import")){(a=new XMLHttpRequest).open("GET","https://psydel.000webhostapp.com/",!0),a.onreadystatechange=function(t){4==a.readyState&&200==a.status&&(setlocalbmk(JSON.parse(a.responseText)),window.parent.postMessage({bmk:JSON.parse(a.responseText),type:"importd"},e.origin))},a.send(null)}else if(e.data.type.match("export")){var a;(a=new XMLHttpRequest).open("POST","https://psydel.000webhostapp.com/",!0),a.onreadystatechange=function(t){4==a.readyState&&200==a.status&&(alert(a.responseText),window.parent.postMessage({result:"complete",type:"exportd"},e.origin))};var t=new FormData;t.append("id",JSON.stringify(getlocalbmk())),a.send(t)}else if(e.data.type.match("change")){var n=getlocalbmk(),l=n,o=e.data.info;if(o.loc.split("/").forEach(function(e){l=l.value[e]}),o.act.match("add"))o.data.forEach(function(e){var a={};if(a.data={},a.data.created=(new Date).getTime(),a.data.modified=(new Date).getTime(),a.data.name=e.name,a.path=o.loc,a.type="link",a.value=e.url,e.name){if(l.value[e.name])if(confirm(e.name+" is already exist.\\noverwrite it?"));else for(;l.value[e.name=prompt("new name",e.name)];)if(!e.name)return;l.value[e.name]=a,l.data.order.push(e.name)}});else if(o.act.match("new"))o.data.forEach(function(e){var a={data:{}};a.data.created=(new Date).getTime(),a.data.modified=(new Date).getTime(),a.data.name=e.name,a.data.order=[],a.path=o.loc,a.type="folder",a.value={},l.value[e.name]?alert(e.name+" is already exist."):(l.value[e.name]=a,l.data.order.push(e.name))});else if(o.act.match("remove"))o.data.forEach(function(e){l=n,e.loc.split("/").forEach(function(e){l=l.value[e]}),delete l.value[e.name],l.data.modified=(new Date).getTime(),l.data.order.splice(l.data.order.indexOf(e.name),1)});else if(o.act.match("cut"))o.data.forEach(function(e){l=n,e.loc.split("/").forEach(function(e){l=l.value[e]}),r.push(l.value[e.name]),delete l.value[e.name],l.data.modified=(new Date).getTime(),l.data.order.splice(l.data.order.indexOf(e.name),1)}),localStorage.setItem("croped",JSON.Stringify(r));else if(o.act.match("copy")){var r=JSON.parse(localStorage.getItem("croped"))||[];o.data.forEach(function(e){l=n,e.loc.split("/").forEach(function(e){l=l.value[e]}),r.push(l.value[e.name])}),localStorage.setItem("croped",JSON.Stringify(r))}else if(o.act.match("paste")){(r=JSON.parse(localStorage.getItem("croped"))||[]).forEach(function(e){if(l.value[e.data.name]){if("link"==l.value[e.data.name].type){if("link"==e.type)e.path=o.loc,l.value[e.data.name]=e;else if("folder"==e.type){var a="temp_link_"+e.data.name+"@"+(new Date).getTime();e.path=o.loc,l.value[a]=l.value[e.data.name],l.value[e.data.name]=e,l.data.order.push(a)}}else if("folder"==l.value[e.data.name].type)if("link"==e.type){a="temp_link_"+e.data.name+"@"+(new Date).getTime();e.path=o.loc,l.value[a]=e,l.data.order.push(a)}else"folder"==e.type&&(e.path=o.loc,mergebmk(l.value[e.data.name],e))}else l.value[e.data.name]=e,l.value[e.data.name].data.modified=(new Date).getTime(),l.value[e.data.name].path=o.loc})}else if(o.act.match("cancel"))o.data.forEach(function(e){(JSON.parse(localStorage.getItem("croped"))||[]).forEach(function(e){l=n,e.loc.split("/").forEach(function(e){l=l.value[e]}),l.value[e.data.name]=e}),localStorage.removeItem("croped")});else if(o.act.match("sort")){var m=[],d=[];Object.keys(l.value).forEach(function(e){"folder"==l.value[e].type?m.push(e):d.push(e)}),m.sort(),d.sort(),l.data.order=[].concat(m,d)}else o.act.match("change")&&o.data.forEach(function(e){if(e.name){if(l.value[e.name]&&e.name!=e.pname&&!confirm(e.name+" is already exist.\\noverwrite it?"))for(;l.value[e.name=prompt("new name",e.name)];)if(!e.name)return;l.value[e.name]=l.value[e.pname],e.name!=e.pname&&delete l.value[e.pname],l.data.order.splice(l.data.order.indexOf(e.pname),1,e.name),l.value[e.name].data.modified=(new Date).getTime(),"link"==l.value[e.name].type&&(l.value[e.name].value=e.url)}});setlocalbmk(n),console.log("setted"),window.parent.postMessage({bmk:n,type:"changd"},e.origin)}}),document.head.removeChild(document.getElementsByTagName("script")[0]);'
+		b:'data:text/javascript,'+escape(iframe)
 	},"*");
 });
 a.src="https://psydel.000webhostapp.com/iframe/";
@@ -512,31 +825,29 @@ var extension = {
 			tag:"br",
 			target:bmks
 		});
-		if (bmk.classList.contains("__link")) {
-			extension.iptnds({
-				tag:"label",
-				id:"bmkpath",
-				childs:[{
-					tag:"span",
-					name:"path",
-					classname:["__left"]
+		extension.iptnds({
+			tag:"label",
+			id:"bmkpath",
+			childs:[{
+				tag:"span",
+				name:"path",
+				classname:["__left"]
+			},
+			{
+				tag:"input",
+				attributes:[{
+					name:"type",
+					value:"text"
 				},
 				{
-					tag:"input",
-					attributes:[{
-						name:"type",
-						value:"text"
-					},
-					{
-						name:"value",
-						value:bmk.dataset.val
-					}],
-					classname:["__right"]
+					name:"value",
+					value:bmk.dataset.val
 				}],
-				classname:["__textfield"],
-				target:bmks
-			});
-		}
+				classname:["__right"]
+			}],
+			classname:["__textfield"].push((bmk.classList.contains("__link")?"__hided":"__none")),
+			target:bmks
+		});
 		extension.iptnds({
 			tag:"div",
 			id:"changeconfirm",
@@ -601,52 +912,40 @@ var extension = {
 			tag:"br",
 			target:bmks
 		});
-		if (bmk.classList.contains("__link")) {
-			extension.iptnds({
-				tag:"label",
-				id:"bmkpath",
-				childs:[{
-					tag:"span",
-					name:"url",
-					classname:["__left"]
-				},
-				{
-					tag:"input",
-					attributes:[{
-						name:"type",
-						value:"text"
-					}],
-					classname:["__right"]
+		extension.iptnds({
+			tag:"label",
+			id:"bmkpath",
+			childs:[{
+				tag:"span",
+				name:"url",
+				classname:["__left"]
+			},
+			{
+				tag:"input",
+				attributes:[{
+					name:"type",
+					value:"text"
 				}],
-				classname:["__textfield"],
-				target:bmks
-			});
-		}
+				classname:["__right"]
+			}],
+			classname:["__textfield"],
+			target:bmks
+		});
 		extension.iptnds({
 			tag:"div",
 			id:"changeconfirm",
 			name:"confirm",
 			classname:["__left","__bottom","__buttons"],
-			data:[{
-				name:"loc",
-				value:bmk.dataset.loc
-			},
-			{
-				name:"name",
-				value:bmk.id
-			}],
 			events:[{
 				name:"click",
 				value:function () {
-					document.getElementById("go_up").classList.remove("__disabled");
 					document.getElementById("dir").dataset.loc+="/searchresult";
-					document.getElementById("dir").textContent+="/searchresult";
-					if (!document.getElementById("bmkname")&&!document.getElementById("bmkpath")) {
+					if (!document.querySelector("#bmkname input").value&&!document.querySelector("#bmkpath input").value) {
 						return undefined;
 					}
 					extension.showlist(extension.search(bmkptr,{
-						name:document.getElementById("bmkname"),
-						url:document.getElementById("bmkpath")
+						name:document.querySelector("#bmkname input").value,
+						url:document.querySelector("#bmkpath input").value
 					}));
 				}
 			}],
@@ -691,12 +990,13 @@ var extension = {
 		extension.bmkaction({
 			type:"change",
 			info:{
-				act:"cut",
+				act:"move",
 				loc:document.getElementById("dir").dataset.loc,
-				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>v.dataset))
+				data:Array.prototype.map.call(document.querySelectorAll("#bmks .__checkbox.__checked"),(v=>({loc:v.dataset.loc,name:v.dataset.name})))
 			}
 		},"*");
         document.getElementById("pastebmk").classList.remove("__hided");
+		extension.edtdact();
 	},
 
 	copy: function () {
@@ -705,10 +1005,11 @@ var extension = {
 			info:{
 				act:"copy",
 				loc:document.getElementById("dir").dataset.loc,
-				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>v.dataset))
+				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>({loc:v.dataset.loc,name:v.dataset.name})))
 			}
 		},"*");
         document.getElementById("pastebmk").classList.remove("__hided");
+		extension.edtdact();
 	},
 
 	remove: function () {
@@ -717,7 +1018,7 @@ var extension = {
 			info:{
 				act:"remove",
 				loc:document.getElementById("dir").dataset.loc,
-				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>v.dataset))
+				data:Array.prototype.map.call(document.querySelectorAll(".__checkbox.__checked"),(v=>({loc:v.dataset.loc,name:v.dataset.name})))
 			}
 		},"*");
 	},
@@ -757,6 +1058,7 @@ var extension = {
 
 	search: function (bmk,option) {
 		var arr=[]
+		console.log(option);
 		for (var a in bmk.value) {
 			if (option.url&&bmk.value[a].type=="link"&&bmk.value[a].value.match(new RegExp(option.url,"i"))) {
 				arr.push(bmk.value[a]);
@@ -955,23 +1257,7 @@ extension.intfc=[{
 		classname: ["__buttons","__inedit"],
 		events: [{
 			name: "click",
-			value: function () {
-				var aaa = confirm("url값");
-				var bbb = prompt("검색할 값","");
-				var ccc={};
-				if (!bbb) {
-					return undefined;
-				}
-				var bmkptr = extension.bmk;
-				document.getElementById("dir").dataset.loc.split("/").forEach(function (val) {
-					bmkptr = bmkptr.value[val];
-				});
-				ccc[(aaa?"url":"name")]={val:bbb};
-				document.getElementById("go_up").classList.remove("__disabled");
-				document.getElementById("dir").dataset.loc+="/searchresult";
-				document.getElementById("dir").textContent+="/searchresult";
-				extension.showlist(extension.search(bmkptr,ccc));
-			}
+			value: extension.bmksearch
 		}]
 	},
 	{
@@ -1078,6 +1364,16 @@ extension.intfc=[{
 	},
 	{
 		tag: "div",
+		name: "all select",
+		image: dataurls.all,
+		events: [{
+			name: "click",
+			value: ()=>document.querySelectorAll("#bmks .__checkbox").forEach((v)=>(v.classList.toggle("__checked")))
+		}],
+		classname: ["__invisibled","__buttons","__editout"]
+	},
+	{
+		tag: "div",
 		name: "remove",
 		image: dataurls.remove,
 		events: [{
@@ -1086,7 +1382,7 @@ extension.intfc=[{
 		}],
 		classname: ["__invisibled","__buttons","__editout"]
 	},
-	{
+	{//
 		tag: "div",
 		name: "copy",
 		image: dataurls.copy,
@@ -1236,6 +1532,10 @@ window.addEventListener("message",function (e) {
 		else {
 			extension.bmk=e.data.bmk;
 			extension.show(document.getElementById("dir").dataset.loc);
+			if (e.data.croped) {
+				document.getElementById("pastebmk").classList.remove("__hided");
+				extension.edtdact();
+			}
 		}
 	}
 	else if (e.data.type=="setted") {
@@ -1244,6 +1544,10 @@ window.addEventListener("message",function (e) {
 	else if (e.data.type=="importd") {
 		extension.bmk=e.data.bmk;
 		extension.show(document.getElementById("dir").dataset.loc);
+		if (e.data.croped) {
+			document.getElementById("pastebmk").classList.remove("__hided");
+			extension.edtdact();
+		}
 	}
 	else if (e.data.type=="exportd") {
 		alert("exported");
@@ -1251,6 +1555,10 @@ window.addEventListener("message",function (e) {
 	else if (e.data.type=="changd") {
 		extension.bmk=e.data.bmk;
 		extension.show(document.getElementById("dir").dataset.loc);
+		if (e.data.croped) {
+			document.getElementById("pastebmk").classList.remove("__hided");
+			extension.edtdact();
+		}
 	}
 });
 
@@ -1266,7 +1574,10 @@ extension.iptnds({
 	id:"bmktoggle",
 	events:[{
 		name:"click",
-		value:()=>(document.getElementById("bmkmain").classList.remove("__hided"))
+		value:()=>{
+			extension.bmkaction({type:"getbmk"},"*");
+			document.getElementById("bmkmain").classList.remove("__hided");
+		}
 	}]
 });
 
