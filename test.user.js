@@ -592,7 +592,7 @@ var dataurls= {
 var a=document.createElement("style");
 document.head.appendChild(a);
 a.appendChild(document.createTextNode(".__textfield {width:100%;}"
-+"\n.__bottom {position:absolute; bottom:30px;}"
++"\n.__bottom {position:absolute; bottom:5px; overflow:hidden;}"
 +"\n.__left {position:absolute; left:3px;}"
 +"\n.__right {position:absolute; right:3px;}"
 +"\n.__link {color:#aa8888;}"
@@ -881,6 +881,7 @@ var extension = {
 	},
 
 	bmksearch: function () {
+        document.getElementById("pastebmk").classList.add("__hided");
 		var bmks=document.getElementById("bmks");
 		while (bmks.firstChild) {
 			bmks.removeChild(bmks.firstChild);
@@ -939,7 +940,6 @@ var extension = {
 			events:[{
 				name:"click",
 				value:function () {
-					document.getElementById("dir").textContent+="/searchresult";
 					if (!document.querySelector("#bmkname input").value&&!document.querySelector("#bmkpath input").value) {
 						return undefined;
 					}
@@ -947,6 +947,20 @@ var extension = {
 						name:document.querySelector("#bmkname input").value,
 						url:document.querySelector("#bmkpath input").value
 					}));
+					extension.iptnds({
+						tag:"div",
+						name:"cancel",
+						classname:["__left","__bottom","__buttons"],
+						events:[{
+							name:"click",
+							value:function () {
+								extension.bmkaction({
+									type:"getbmk"
+								},"*");
+							}
+						}],
+						target:bmks
+					});
 				}
 			}],
 			target:bmks
@@ -1058,7 +1072,6 @@ var extension = {
 
 	search: function (bmk,option) {
 		var arr=[]
-		console.log(option);
 		for (var a in bmk.value) {
 			if (option.url&&bmk.value[a].type=="link"&&bmk.value[a].value.match(new RegExp(option.url,"i"))) {
 				arr.push(bmk.value[a]);
