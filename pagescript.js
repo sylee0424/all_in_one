@@ -1,6 +1,4 @@
-﻿Extension_Sub_Functions.Add_Extension_Interface.f();
-
-if (location.href.match(/^https?\:\/\/hitomi\.la/i)) {
+﻿if (location.href.match(/^https?\:\/\/hitomi\.la/i)) {
 	Extension_Sub_Functions.hitomi_Link_Change.f();
 }
 

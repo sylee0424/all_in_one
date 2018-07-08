@@ -320,7 +320,7 @@ function MergeRecursive(obj1, obj2) {
 */
 var extension=(!!chrome)?chrome:browser;
 
-addscript(["test.user.js"],true);
+addscript(["test.user.js","pageobject.js","pagescript.js"],true);
 /*
 window.addEventListener("message",contentonmessage);
 
