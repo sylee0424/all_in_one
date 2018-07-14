@@ -168,3 +168,12 @@ function hitomi_download() {
 }
 
 hitomi();
+
+var div = document.createElement("div");
+div.id = "hitomi_download";
+div.className="__extension"
+div.addEventListener("click",hitomi_download);
+div.appendChild(document.createTextNode("download"));
+document.body.appendChild(div);
+
+document.querySelector(".gallery\-content").addEventListener("change",console.log);

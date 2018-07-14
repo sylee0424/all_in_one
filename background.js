@@ -109,7 +109,8 @@ extension.webRequest.onBeforeSendHeaders.addListener(
 		"http://*.advertising.com/*",
 		"http://redir.adap.tv/*",
 		"https://adserver.juicyads.com/*",
-		"https://js.isboost.co.jp/t/*/*/a*.js"
+		"https://js.isboost.co.jp/t/*/*/a*.js",
+		"https://ltn.hitomi.la/RaCtICanTi24.js"
 	]},
 	["blocking", "requestHeaders"]
 );
