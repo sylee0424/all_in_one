@@ -109,7 +109,7 @@ var iframe=(function () {/*
 					}
 					if (bmkptr.value[v.name]) {
 						if (confirm(v.name+" is already exist.\noverwrite it?")) {
-							
+
 						}
 						else {
 							while(bmkptr.value[(v.name=prompt("new name",v.name))]) {
@@ -279,7 +279,6 @@ var iframe=(function () {/*
 			},e.origin);
 		}
 	});
-
 	function mergebmk(origin,target) {
 		var order=[].concat(origin.data.order,target.data.order);
 		for (var a in target.value) {
@@ -313,7 +312,6 @@ var iframe=(function () {/*
 		origin.data.order=order;
 		origin.data.modified=(new Date()).getTime();
 	}
-
 	function getlocalbmk() {
 		var bmklength=Number(localStorage.getItem("bmklength"));
 		var bmkstring="";
@@ -325,7 +323,6 @@ var iframe=(function () {/*
 		}
 		return JSON.parse(bmkstring);
 	}
-
 	function setlocalbmk(bmk) {
 		var bmkstring=JSON.stringify(bmk);
 		var bmklength=0;
@@ -336,8 +333,35 @@ var iframe=(function () {/*
 		}
 		localStorage.setItem("bmklength",bmklength);
 	}
-
 	document.head.removeChild(document.getElementsByTagName("script")[0]);
+*/}).toString().match(/[^]*\/\*([^]*)\*\/\}$/)[1];
+
+var css =(function () {/*.__textfield {width:100%;}
+    .__bottom {position:absolute; bottom:5px; overflow:hidden;}
+    .__left {position:absolute; left:3px;}
+    .__right {position:absolute; right:3px;}
+    .__link {color:#aa8888;}
+    .__folder {color:#88aaaa;}
+    .__checked {background-color:#2f2f2f !important;}
+    .__extension {word-wrap:break-word;line-height:10px;vertical-align: middle;box-sizing:border-box;z-index:11;border:1px solid #000000;font-size:10px;}
+    .__disabled {filter:invert(100%); border-color:#ffffff;}
+    .__buttons.__extension {width:20px; height:20px; display:inline-block; font-size:10px;}
+    .__checkbox {display:inline-block; width:10px; height:10px; border:1px solid #000000;}
+    .__hided {display:none !important; }
+    .__invisibled {visibility:hidden; !important;}
+    .__innerimage {width:100%; height:100%;}
+    label.__extension {width:70px; height:20px; display:inline-block;}
+    #dir {height:20px;}
+    #pastebmk {position:absolute; bottom:0px; left:0px; width:100px; height:25px;}
+    #bmkmain {background-color:#ffffff; text-align:left; position:fixed; top:20px; left:20px; width:320px; height:500px; z-index:9999; overflow:auto; max-width:calc(100% - 40px); max-height:calc(100% - 40px);}
+    #bmks.__copyactive {height:calc(100% - 130px);}
+    #bmks {height:calc(100% - 100px); overflow:auto; font-size:15px; line-height:20px; width:100%}
+    #bmkmain label {display:inline-block; border:1px solid #000000; margin-bottom:10px; min-width:90px;}
+    #bmks span {font-size:15px;height:20px;}
+    #bmks input {font-size:15px;height:20px;width:200px}
+    #bmktoggle {position:fixed; left:0px; bottom:0px; width:50px; height:50px; opacity:0.5;}
+    #bmkmain #bmkname {border:0px solid #000000;}
+    #bmkmain #bmkpath {border:0px solid #000000;}));
 */}).toString().match(/[^]*\/\*([^]*)\*\/\}$/)[1];
 /*from https://stackoverflow.com/questions/805107/creating-multiline-strings-in-javascript#805755 */
 
@@ -573,7 +597,7 @@ var dataurls= {
 	  + "MC4zbDcuNS03LjVjMC4yLTAuMiwwLjUtMC4yLDAuNywwbDcuNSw3LjVjMC4yLDAuMiwwLjUsMC4zLDAuNywwLjNzMC41LTAuMSwwLjctMC4zb"
 	  + "DEuNC0xLjRjMC4yLTAuMiwwLjMtMC41LDAuMy0wLjcgIHMtMC4xLTAuNS0wLjMtMC43TDE0LjEsMTEuM3oiIGZpbGw9IiMwMDAwMDAiLz4KPC"
 	  + "9zdmc+Cg==",
-	  
+
 	"reset"		:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjw"
 	  + "v8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAM/SURBVGhD7dlZyA5RHMfx15JkS0S2C4lciAtJSClXltxQlBIuLBfW15pdJOVCiiKSRJZygSR"
 	  + "LXHDhAkmIREhCyR6yfn88/zrGeObMPDNPMzW/+vR65/WcOf95ziznTEOZMvlPb0zFZhzCGZzDKRzEekxCN+QufaGOP8TPGG5iGbogTjpVfqaW"
@@ -591,33 +615,7 @@ var dataurls= {
 
 var a=document.createElement("style");
 document.head.appendChild(a);
-a.appendChild(document.createTextNode(".__textfield {width:100%;}"
-+"\n.__bottom {position:absolute; bottom:5px; overflow:hidden;}"
-+"\n.__left {position:absolute; left:3px;}"
-+"\n.__right {position:absolute; right:3px;}"
-+"\n.__link {color:#aa8888;}"
-+"\n.__folder {color:#88aaaa;}"
-+"\n.__checked {background-color:#2f2f2f !important;}"
-+"\n.__extension {word-wrap:break-word;line-height:10px;vertical-align: middle;box-sizing:border-box;z-index:11;border:1px solid #000000;font-size:10px;}"
-+"\n.__disabled {filter:invert(100%); border-color:#ffffff;}"
-+"\n.__buttons.__extension {width:20px; height:20px; display:inline-block; font-size:10px;}"
-+"\n.__checkbox {display:inline-block; width:10px; height:10px; border:1px solid #000000;}"
-+"\n.__hided {display:none !important; }"
-+"\n.__invisibled {visibility:hidden; !important;}"
-+"\n.__innerimage {width:100%; height:100%;}"
-+"\nlabel.__extension {width:70px; height:20px; display:inline-block;}"
-+"\n#dir {height:20px;}"
-+"\n#pastebmk {position:absolute; bottom:0px; left:0px; width:100px; height:25px;}"
-+"\n#bmkmain {text-align:left; position:fixed; top:20px; left:20px; width:320px; height:500px; z-index:9999; overflow:auto; max-width:calc(100% - 40px); max-height:calc(100% - 40px);}"
-+"\n#bmks.__copyactive {height:calc(100% - 130px);}"
-+"\n#bmks {height:calc(100% - 100px); overflow:auto; font-size:15px; line-height:20px; width:100%}"
-+"\n#bmkmain label {display:inline-block; border:1px solid #000000; margin-bottom:10px; min-width:90px;}"
-+"\n#bmks span {font-size:15px;height:20px;}"
-+"\n#bmks input {font-size:15px;height:20px;width:200px}"
-+"\n#bmktoggle {position:fixed; left:0px; bottom:0px; width:50px; height:50px; opacity:0.5;}"
-+"\n#bmkmain #bmkname {border:0px solid #000000;}"
-+"\n#bmkmain #bmkpath {border:0px solid #000000;}"));
-
+a.appendChild(document.createTextNode(css));
 a=document.createElement("iframe");
 a.id="bmkaction";
 a.style.display="none";
@@ -771,7 +769,7 @@ var extension = {
 
 	lclick: function (e) {
 		if (extension.inedit) {
-       
+
 		}
 		else {
 			e.preventDefault();
@@ -1596,4 +1594,4 @@ extension.iptnds({
 
 extension.intfc.map(v=>{v.target=document.getElementById("bmkmain"); return v;}).forEach(extension.iptnds);
 
-document.querySelectorAll("div[class*='ad_']").forEach((e)=>e.style.display="none");
+document.querySelectorAll("div[class*='ad_']").forEach((e)=>(e.style.display="none"));
