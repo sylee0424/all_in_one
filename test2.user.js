@@ -23,9 +23,9 @@ function hitomi() {
 			inp.type = "checkbox";
 			inq.style.display = "inline";
 			inp.id = "input-" + i;
-			inp.addEventListener("click", (e)=>e.preventDefault());
+			inq.addEventListener("click", (e)=>{e.stopPropagation(); return false;});
 			inp.style["vertical-align"] = "middle";
-			inq.addEventListener("click", (e)=>(this.checked=!this.checked));
+			inp.addEventListener("click", (e)=>(this.checked=!this.checked));
 			if (divs[i].parentNode.parentNode.parentNode.getAttribute("class") != "page-container" &&
 				divs[i].parentNode.tagName != "DIV" && divs[i].href != "/") {
 				if (k.match("galleries")) {
@@ -167,13 +167,20 @@ function hitomi_download() {
 	}
 }
 
-hitomi();
+if (location.href.match(/^https?\:\/\/hitomi\.la/i)) {
 
 var div = document.createElement("div");
 div.id = "hitomi_download";
-div.className="__extension"
+div.className="__extension";
 div.addEventListener("click",hitomi_download);
 div.appendChild(document.createTextNode("download"));
 document.body.appendChild(div);
 
-document.querySelector(".gallery\-content").addEventListener("change",console.log);
+var o=setInterval(function () {
+    if (document.querySelectorAll("div.gallery-content img").length!=1) {
+        hitomi();
+        clearInterval(o)
+    }
+},50);
+
+}

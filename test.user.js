@@ -360,6 +360,9 @@ var css =(function () {/*.__textfield {width:100%;}
     #bmks span {font-size:15px;height:20px;}
     #bmks input {font-size:15px;height:20px;width:200px}
     #bmktoggle {position:fixed; left:0px; bottom:0px; width:50px; height:50px; opacity:0.5;}
+    #hitomi_download {position:fixed; left:70px; bottom:0px; width:50px; height:50px; opacity:0.5;}
+    #gototop {position:fixed; right:70px; bottom:0px; width:50px; height:50px; opacity:0.5;}
+    #gotobottom {position:fixed; right:0px; bottom:0px; width:50px; height:50px; opacity:0.5;}
     #bmkmain #bmkname {border:0px solid #000000;}
     #bmkmain #bmkpath {border:0px solid #000000;}));
 */}).toString().match(/[^]*\/\*([^]*)\*\/\}$/)[1];
@@ -680,8 +683,8 @@ var extension = {
 					value:extension.lclick
 				},
 				{
-					name:"long-press",
-					value:(e)=>console.log(e)
+					name:"selectstart",
+					value:(e)=>e.preventDefault()
 				}],
 				target:document.getElementById("bmks")
 			});
@@ -755,7 +758,7 @@ var extension = {
 					window.open(this.dataset.val,"_self");
 				}
 				else {
-					window.open(this.dataset.val,"_blink");
+					window.open(this.dataset.val,"_blank");
 				}
 			}
 			else {
@@ -1589,6 +1592,66 @@ extension.iptnds({
 			extension.bmkaction({type:"getbmk"},"*");
 			document.getElementById("bmkmain").classList.remove("__hided");
 		}
+	}]
+});
+
+extension.iptnds({
+	tag:"div",
+	name:"prev",
+	id:"gototop",
+	events:[{
+		name:"click",
+		value:()=>history.go(-1)
+	},
+               {
+		name:"long-press",
+		value:()=>(document.documentElement.scrollTop=0)
+	},
+               {
+		name:"selectstart",
+		value:(e)=>e.preventDefault()
+	},
+               {
+		name:"contextmenu",
+		value:(e)=>e.preventDefault()
+	},
+               {
+		name:"mousedown",
+		value:console.log
+	},
+               {
+		name:"touchstart",
+		value:console.log
+	}]
+});
+
+extension.iptnds({
+	tag:"div",
+	name:"next",
+	id:"gotobottom",
+	events:[{
+		name:"click",
+		value:()=>history.go(1)
+	},
+               {
+		name:"long-press",
+		value:()=>(document.documentElement.scrollTop=document.documentElement.scrollHeight)
+	},
+               {
+		name:"selectstart",
+		value:(e)=>e.preventDefault()
+	},
+               {
+		name:"contextmenu",
+		value:(e)=>e.preventDefault()
+	},
+               {
+		name:"mousedown",
+		value:console.log
+	},
+               {
+		name:"touchstart",
+		value:console.log
 	}]
 });
 
