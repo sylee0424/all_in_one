@@ -281,15 +281,26 @@ var iframe=(function () {/*
 		}
 		else if (e.data.type.match("tabcontrol")) {
 			var info=e.data.info;
+			var tablist=(JSON.parse(localStorage.getItem("tablist"))||[]);
 			if (info.act.match("open")) {
-				
+				tablist.push({
+					title:info.title,
+					url:info.url
+				});
 			}
 			else if (info.act.match("close")) {
-				
+				tablist.forEach(function (v,i,arr) {
+					if (v.title==info.title&&v.url==info.url) {
+						arr.splice(i,1);
+						info.title=null;
+						info.url=null;
+					}
+				});
 			}
+			localStorage.setItem("tablist",JSON.stringify(tablist));
 			window.parent.postMessage({
 				"result":"complete",
-				"type":"test"
+				"type":"tabcontrol"
 			},e.origin);
 		}
 		else if (e.data.type.match("test")) {
