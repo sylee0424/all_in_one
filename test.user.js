@@ -280,20 +280,29 @@ var iframe=(function () {/*
 			},e.origin);
 		}
 		else if (e.data.type.match("tabcontrol")) {
+			console.log(e);
 			var info=e.data.info;
 			var tablist=(JSON.parse(localStorage.getItem("tablist"))||[]);
 			if (info.act.match("open")) {
-				tablist.push({
-					title:info.title,
-					url:info.url
+				tablist.forEach(function (v,i,arr) {
+					if (v.tabid==info.tabid) {
+						v.title=info.title;
+						v.url=info.url;
+						info.tabid=null;
+					}
 				});
+				if (info.tabid) {
+					tablist.push({
+						title:info.title,
+						url:info.url,
+						tabid:info.tabid
+					});
+				}
 			}
 			else if (info.act.match("close")) {
 				tablist.forEach(function (v,i,arr) {
-					if (v.title==info.title&&v.url==info.url) {
+					if (v.tabid==info.tabid) {
 						arr.splice(i,1);
-						info.title=null;
-						info.url=null;
 					}
 				});
 			}
@@ -371,6 +380,10 @@ var iframe=(function () {/*
 			
 		}
 	});
+	window.parent.postMessage({
+		"result":"complete",
+		"type":"iframe"
+	},"*");
 */}).toString().match(/[^]*\/\*([^]*)\*\/\}$/)[1];
 
 var css =(function () {/*.__textfield {width:100%;}
@@ -1252,11 +1265,11 @@ var extension = {
 
 };
 
-extension.bmkaction= function (a,b) {
+extension.bmkaction = function (a,b) {
     document.getElementById("bmkaction").contentWindow.postMessage(a,b);
 };
 
-extension.changebmk=function (bmk,path) {
+extension.changebmk = function (bmk,path) {
 	bmk.data.order=[];
 	for (var a in bmk.value) {
 		bmk.data.order.push(a);
@@ -1276,7 +1289,7 @@ extension.changebmk=function (bmk,path) {
     }
 }
 
-extension.intfc=[{
+extension.intfc = [{
 		tag: "div",
 		name: "edit bmks",
 		image: dataurls.edit,
@@ -1574,6 +1587,20 @@ window.addEventListener("message",function (e) {
 			type:"getbmk"
 		},"*");
 	}
+	else if (e.data.type=="iframe") {
+		if (!sessionStorage.getItem("tabid")) {
+			sessionStorage.setItem("tabid",Math.floor(Math.random()*100000000));
+		}
+		extension.bmkaction({
+			type:"tabcontrol",
+			info:{
+				act:"open",
+				url:location.href,
+				title:document.title,
+				tabid:sessionStorage.getItem("tabid")
+			}
+		},"*");
+	}
 	else if (e.data.type=="getted") {
 		if (!e.data.bmk) {
 			document.getElementById("bmkaction").contentWindow.postMessage({
@@ -1611,6 +1638,23 @@ window.addEventListener("message",function (e) {
 			extension.edtdact();
 		}
 	}
+});
+
+window.addEventListener("beforeunload",async function (e) {
+	console.log(e);
+	extension.bmkaction({
+		type:"tabcontrol",
+		info:{
+			act:"close",
+			url:location.href,
+			title:document.title
+		}
+	},"*");
+	return await (new Promise(resolve => {
+		setTimeout(() => {
+			resolve('resolved');
+		}, 2000);
+	}));
 });
 
 extension.iptnds({
