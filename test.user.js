@@ -279,7 +279,7 @@ var iframe=(function () {/*
 				"croped":localStorage.getItem("croped")&&true
 			},e.origin);
 		}
-		else if (e.data.type.match("tabcontrol")) {
+		else if (e.data.type.match("tabcontroll")) {
 			console.log(e);
 			var info=e.data.info;
 			var tablist=(JSON.parse(localStorage.getItem("tablist"))||[]);
@@ -1484,6 +1484,12 @@ extension.intfc = [{
 		events: [{
 			name: "click",
 			value: extension.importbmk
+		},
+		{
+			name: "long-press",
+			value: ()=>window.postMessage({
+				type:"exportFromExtension"
+			},"*")
 		}]
 	},
 	{
@@ -1494,6 +1500,13 @@ extension.intfc = [{
 		events: [{
 			name: "click",
 			value: extension.exportbmk
+		},
+		{
+			name: "long-press",
+			value: ()=>window.postMessage({
+				type:"exportToExtension",
+				bmk:JSON.parse(unescape(v.bmks))
+			},"*")
 		}]
 	},
 	{
@@ -1588,7 +1601,7 @@ window.addEventListener("message",function (e) {
 		},"*");
 	}
 	else if (e.data.type=="iframe") {
-		if (!sessionStorage.getItem("tabid")) {
+		/*if (!sessionStorage.getItem("tabid")) {
 			sessionStorage.setItem("tabid",Math.floor(Math.random()*100000000));
 		}
 		extension.bmkaction({
@@ -1599,7 +1612,19 @@ window.addEventListener("message",function (e) {
 				title:document.title,
 				tabid:sessionStorage.getItem("tabid")
 			}
+		},"*");*/
+	}
+	else if (e.data.type=="importFromExtension") {
+		extension.bmk=e.data.bmk;
+		extension.bmkaction({
+			type:"setbmk",
+			bmk:e.data.bmk
 		},"*");
+		extension.show(document.getElementById("dir").dataset.loc);
+		alert("import complete");
+	}
+	else if (e.data.type=="importToExtension") {
+		alert("export complete");
 	}
 	else if (e.data.type=="getted") {
 		if (!e.data.bmk) {
