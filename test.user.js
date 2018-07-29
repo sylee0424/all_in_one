@@ -1483,10 +1483,6 @@ extension.intfc = [{
 		classname: ["__buttons","__bmktool","__hided"],
 		events: [{
 			name: "click",
-			value: extension.importbmk
-		},
-		{
-			name: "long-press",
 			value: ()=>window.postMessage({
 				type:"exportFromExtension"
 			},"*")
@@ -1499,13 +1495,9 @@ extension.intfc = [{
 		classname: ["__buttons","__bmktool","__hided"],
 		events: [{
 			name: "click",
-			value: extension.exportbmk
-		},
-		{
-			name: "long-press",
 			value: ()=>window.postMessage({
 				type:"exportToExtension",
-				bmk:JSON.parse(unescape(v.bmks))
+				bmk:extension.bmk
 			},"*")
 		}]
 	},
