@@ -428,9 +428,6 @@ var css =(function () {/*.__textfield {width:100%;}
 			})
 		);
 		clearTimeout(o);
-		if (console&&console.log) {
-			console.log("long-press fired on "+this.outerHTML);
-		}
 	}
 	var o=null;
 	var u="ontouchstart"in t||navigator.MaxTouchPoints>0||navigator.msMaxTouchPoints>0;
@@ -1756,3 +1753,16 @@ extension.iptnds({
 extension.intfc.map(v=>{v.target=document.getElementById("bmkmain"); return v;}).forEach(extension.iptnds);
 
 document.querySelectorAll("div[class*='ad_']").forEach((e)=>(e.style.display="none"));
+
+var list=document.querySelectorAll("table.board_list_table tr.table_body");
+var users=["驅逐艦_響"];
+list.forEach(function (v) {
+	if (v.querySelector("td.writer")) {
+		users.forEach(function (e) {
+			if (v.querySelector("td.writer").textContent.match(e)) {
+				v.classList.add("__hided");
+				console.log(v.querySelector("td.subject").textContent);
+			}
+		});
+	}
+});
