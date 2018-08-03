@@ -7,65 +7,63 @@
 
 function hitomi() {
 	var d = 0;
-	var divs = document.getElementsByTagName('a');
+	var divs = document.querySelectorAll("a[href]");
 	var i = divs.length;
 	while (i--) {
-		var k = divs[i].getAttribute("href");
-		if (k && divs[i].id != "dl-button" && divs[i].parentNode.parentNode.getAttribute("class") !=
-			"simplePagerNav") {
-			divs[i].dataset.url = k;
-			divs[i].dataset.type = "normal";
-			divs[i].dataset.index = i;
-			divs[i].addEventListener("click", hitomi_link);
-			var inp = document.createElement("input");
-			var inq = document.createElement("label");
-			var tx = document.createTextNode("N");
-			inp.type = "checkbox";
-			inq.style.display = "inline";
-			inp.id = "input-" + i;
-			inq.addEventListener("click", (e)=>{e.stopPropagation(); return false;});
-			inp.style["vertical-align"] = "middle";
-			inp.addEventListener("click", (e)=>(this.checked=!this.checked));
-			if (divs[i].parentNode.parentNode.parentNode.getAttribute("class") != "page-container" &&
-				divs[i].parentNode.tagName != "DIV" && divs[i].href != "/") {
-				if (k.match("galleries")) {
-					var j = document.createElement("span");
-					divs[i].insertBefore(j, divs[i].firstChild);
-					j.innerHTML = "(R) ";
-					j.dataset.url = k;
-					j.dataset.type = "reader";
-					j.dataset.index = i;
-					j.addEventListener("click", hitomi_link);
-				}
-				if (k.match("-all-")) {
-					var j = document.createElement("span");
-					divs[i].insertBefore(j, divs[i].firstChild);
-					j.innerHTML = "(K) ";
-					j.dataset.url = k;
-					j.dataset.type = "korean";
-					j.dataset.index = i;
-					j.addEventListener("click", hitomi_link);
-				}
-			} else {
+		var k = divs[i].href;
+		divs[i].dataset.url = k;
+		divs[i].dataset.type = "normal";
+		divs[i].dataset.index = i;
+		divs[i].addEventListener("click", hitomi_link);
+		var inp = document.createElement("input");
+		var inq = document.createElement("label");
+		var tx = document.createTextNode("N");
+		inp.type = "checkbox";
+		inq.style.display = "inline";
+		inp.id = "input-" + i;
+		inq.addEventListener("click", (e)=>{e.stopPropagation(); return false;});
+		inp.style["vertical-align"] = "middle";
+		inp.addEventListener("click", (e)=>(this.checked=!this.checked));
+		if (divs[i].parentNode.parentNode.parentNode.getAttribute("class") != "page-container" &&
+			divs[i].parentNode.tagName != "DIV" && k != "/") {
+			if (k.match("galleries")) {
 				var j = document.createElement("span");
-				while (divs[i].firstChild) {
-					j.appendChild(divs[i].firstChild);
-				}
+				divs[i].insertBefore(j, divs[i].firstChild);
+				j.appendChild(document.createTextNode("(R) "));
 				j.dataset.url = k;
-				j.dataset.type = "normal";
+				j.dataset.type = "reader";
 				j.dataset.index = i;
 				j.addEventListener("click", hitomi_link);
-				divs[i].parentNode.insertBefore(j, divs[i]);
-				var k = divs[i];
-				divs[i] = j;
-				k.parentNode.removeChild(k);
-				inq.style.display = "none";
 			}
-			inq.appendChild(tx);
-			inq.appendChild(inp);
-			divs[i].insertBefore(inq, divs[i].firstChild);
-			divs[i].removeAttribute("href");
+			if (k.match("-all-")) {
+				var j = document.createElement("span");
+				divs[i].insertBefore(j, divs[i].firstChild);
+				j.appendChild(document.createTextNode("(K) "));
+				j.dataset.url = k;
+				j.dataset.type = "korean";
+				j.dataset.index = i;
+				j.addEventListener("click", hitomi_link);
+			}
 		}
+		else {
+			var j = document.createElement("span");
+			while (divs[i].firstChild) {
+				j.appendChild(divs[i].firstChild);
+			}
+			j.dataset.url = k;
+			j.dataset.type = "normal";
+			j.dataset.index = i;
+			j.addEventListener("click", hitomi_link);
+			divs[i].parentNode.insertBefore(j, divs[i]);
+			var k = divs[i];
+			divs[i] = j;
+			k.parentNode.removeChild(k);
+			inq.style.display = "none";
+		}
+		inq.appendChild(tx);
+		inq.appendChild(inp);
+		divs[i].insertBefore(inq, divs[i].firstChild);
+		divs[i].removeAttribute("href");
 	}
 	divs = document.getElementsByClassName("page-content")[0]
 	if (divs) {
