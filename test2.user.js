@@ -15,10 +15,12 @@ function hitomi() {
 		v.dataset.type = "normal";
 		v.dataset.index = i;
 		v.addEventListener("click", hitomi_link);
-		/*extension.iptnds({
+		var l = extension.iptnds({
 			tag:"label",
+			classname:["__extension"],
 			childs:[{
 				tag:"span",
+				classname:["__extension"],
 				name:"N"
 			},
 			{
@@ -33,48 +35,48 @@ function hitomi() {
 			events:[{
 				name:"click",
 				value:extension.stopprop
-			}]
-			target:v
+			}],
+			target:v,
 			insert:v.firstChild
-		});*/
-		var inp = document.createElement("div");
-		var inq = document.createElement("label");
-		var tx = document.createTextNode("N");
-		inp.type = "checkbox";
-		inp.classList.add("__checkbox");
-		inq.style.display = "inline";
-		inp.id = "input-" + i;
-		inq.addEventListener("click", extension.stopprop);
-		inp.style["vertical-align"] = "middle";
-		inp.addEventListener("click", extension.toggle);
-		var j = document.createElement("span");
-		j.dataset.url = k;
-		j.dataset.index = i;
-		j.addEventListener("click", hitomi_link);
+		});
+		var j = {};
+		v.removeAttribute("href");
 		if (exclude.indexOf(v)!=-1) {
-			v.parentNode.insertBefore(j, v);
-			inq.style.display = "none";
-			while (v.firstChild) {
-				j.appendChild(v.firstChild);
-			}
-			j.dataset.type = "normal";
-			v.parentNode.removeChild(v);
-			v = j;
+			l.classList.add("__hided");
+			j.name = "";
+			j.type = "normal";
 		}
 		else if (k.match("galleries")) {
-			v.insertBefore(j, v.firstChild);
-			j.appendChild(document.createTextNode("(R) "));
-			j.dataset.type = "reader";
+			j.name = "(R) ";
+			j.type = "reader";
 		}
 		else if (k.match("-all-")) {
-			v.insertBefore(j, v.firstChild);
-			j.appendChild(document.createTextNode("(K) "));
-			j.dataset.type = "korean";
+			j.name = "(K) ";
+			j.type = "korean";
 		}
-		inq.appendChild(tx);
-		inq.appendChild(inp);
-		v.insertBefore(inq, v.firstChild);
-		v.removeAttribute("href");
+		j = extension.iptnds({
+			tag:"span",
+			classname:[(j.name?"__extension":"__hided")],
+			name:j.name,
+			data:[{
+				name:"url",
+				value:k
+			},
+			{
+				name:"index",
+				value:i
+			},
+			{
+				name:"type",
+				value:j.type
+			}],
+			events:[{
+				name:"click",
+				value:hitomi_link
+			}],
+			target:v,
+			insert:v.firstChild
+		});
 	});
 }
 

@@ -1268,6 +1268,7 @@ var extension = {
 		} else {
 			document.body.appendChild(div);
 		}
+		return div;
 	}
 
 };
