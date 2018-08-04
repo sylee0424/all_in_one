@@ -10,12 +10,33 @@ function hitomi() {
 	var list = document.querySelectorAll("a[href]");
 	var exclude =  Array.prototype.slice.call(document.querySelectorAll(".page-container>*>*>a,div>a,a[href='/']"));
 	list.forEach(function (v,i,arr) {
-		console.log(...arguments);
 		var k = v.href;
 		v.dataset.url = k;
 		v.dataset.type = "normal";
 		v.dataset.index = i;
 		v.addEventListener("click", hitomi_link);
+		/*extension.iptnds({
+			tag:"label",
+			childs:[{
+				tag:"span",
+				name:"N"
+			},
+			{
+				tag:"div",
+				classname:["__checkbox"],
+				id:"input-"+i,
+				events:[{
+					name:"click",
+					value:extension.toggle
+				}]
+			}],
+			events:[{
+				name:"click",
+				value:extension.stopprop
+			}]
+			target:v
+			insert:v.firstChild
+		});*/
 		var inp = document.createElement("div");
 		var inq = document.createElement("label");
 		var tx = document.createTextNode("N");
@@ -26,10 +47,6 @@ function hitomi() {
 		inq.addEventListener("click", extension.stopprop);
 		inp.style["vertical-align"] = "middle";
 		inp.addEventListener("click", extension.toggle);
-		inq.appendChild(tx);
-		inq.appendChild(inp);
-		v.insertBefore(inq, v.firstChild);
-		v.removeAttribute("href");
 		var j = document.createElement("span");
 		j.dataset.url = k;
 		j.dataset.index = i;
