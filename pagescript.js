@@ -1,5 +1,5 @@
 ﻿if (location.href.match(/^https?\:\/\/hitomi\.la/i)) {
-	Extension_Sub_Functions.hitomi_Link_Change.f();
+	//Extension_Sub_Functions.hitomi_Link_Change.f();
 }
 
 if (location.href.match(/^https?\:\/\/(m|www|bbs)\.ruliweb/i)) {

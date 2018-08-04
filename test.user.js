@@ -396,7 +396,7 @@ var css =(function () {/*.__textfield {width:100%;}
     .__extension {word-wrap:break-word;line-height:10px;vertical-align: middle;box-sizing:border-box;z-index:11;border:1px solid #000000;font-size:10px;}
     .__disabled {filter:invert(100%); border-color:#ffffff;}
     .__buttons.__extension {width:20px; height:20px; display:inline-block; font-size:10px;}
-    .__checkbox {display:inline-block; width:10px; height:10px; border:1px solid #000000;}
+    .__checkbox {display:inline-block; width:10px; height:10px; border:1px solid #000000; margin-left:5px; margin-right:5px;}
     .__hided {display:none !important; }
     .__invisibled {visibility:hidden; !important;}
     .__innerimage {width:100%; height:100%;}
@@ -1197,6 +1197,11 @@ var extension = {
 
 	toggle: function (e) {
 		this.classList.toggle("__checked");
+	},
+
+	stopprop: function (e) {
+		e.stopPropagation(); 
+		return false;
 	},
 
 	iptnds: function (item) {
