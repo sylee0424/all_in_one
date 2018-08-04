@@ -44,6 +44,10 @@ function addscript(scriptlist,removenode) {
 
 var extension=(!!chrome)?chrome:browser;
 
-addscript(["test.user.js","test2.user.js","pageobject.js","pagescript.js"],true);
+addscript(["test.user.js",
+	"test2.user.js",
+	"pageobject.js",
+	"pagescript.js"
+	],true);
 
 window.addEventListener("message",messageFromPage);

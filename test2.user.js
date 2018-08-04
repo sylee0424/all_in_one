@@ -7,14 +7,14 @@
 
 function hitomi() {
 	var d = 0;
-	var divs = document.querySelectorAll("a[href]");
-	var i = divs.length;
-	while (i--) {
-		var k = divs[i].href;
-		divs[i].dataset.url = k;
-		divs[i].dataset.type = "normal";
-		divs[i].dataset.index = i;
-		divs[i].addEventListener("click", hitomi_link);
+	var list = document.querySelectorAll("a[href]");
+	var exclude =  Array.prototype.slice.call(document.querySelectorAll(".page-container>*>*>a,div>a,a[href='/']"));
+	list.forEach(function (v,i,arr) {
+		var k = v.href;
+		v.dataset.url = k;
+		v.dataset.type = "normal";
+		v.dataset.index = i;
+		v.addEventListener("click", hitomi_link);
 		var inp = document.createElement("input");
 		var inq = document.createElement("label");
 		var tx = document.createTextNode("N");
@@ -24,55 +24,42 @@ function hitomi() {
 		inq.addEventListener("click", (e)=>{e.stopPropagation(); return false;});
 		inp.style["vertical-align"] = "middle";
 		inp.addEventListener("click", (e)=>(this.checked=!this.checked));
-		if (divs[i].parentNode.parentNode.parentNode.getAttribute("class") != "page-container" &&
-			divs[i].parentNode.tagName != "DIV" && k != "/") {
-			if (k.match("galleries")) {
-				var j = document.createElement("span");
-				divs[i].insertBefore(j, divs[i].firstChild);
-				j.appendChild(document.createTextNode("(R) "));
-				j.dataset.url = k;
-				j.dataset.type = "reader";
-				j.dataset.index = i;
-				j.addEventListener("click", hitomi_link);
-			}
-			if (k.match("-all-")) {
-				var j = document.createElement("span");
-				divs[i].insertBefore(j, divs[i].firstChild);
-				j.appendChild(document.createTextNode("(K) "));
-				j.dataset.url = k;
-				j.dataset.type = "korean";
-				j.dataset.index = i;
-				j.addEventListener("click", hitomi_link);
-			}
-		}
-		else {
+		if (k.match("galleries")) {
 			var j = document.createElement("span");
-			while (divs[i].firstChild) {
-				j.appendChild(divs[i].firstChild);
+			v.insertBefore(j, v.firstChild);
+			j.appendChild(document.createTextNode("(R) "));
+			j.dataset.url = k;
+			j.dataset.type = "reader";
+			j.dataset.index = i;
+			j.addEventListener("click", hitomi_link);
+		}
+		if (k.match("-all-")) {
+			var j = document.createElement("span");
+			v.insertBefore(j, v.firstChild);
+			j.appendChild(document.createTextNode("(K) "));
+			j.dataset.url = k;
+			j.dataset.type = "korean";
+			j.dataset.index = i;
+			j.addEventListener("click", hitomi_link);
+		}
+		if (exclude.indexOf(v)!=-1) {
+			var j = document.createElement("span");
+			while (v.firstChild) {
+				j.appendChild(v.firstChild);
 			}
 			j.dataset.url = k;
 			j.dataset.type = "normal";
 			j.dataset.index = i;
 			j.addEventListener("click", hitomi_link);
-			divs[i].parentNode.insertBefore(j, divs[i]);
-			var k = divs[i];
-			divs[i] = j;
-			k.parentNode.removeChild(k);
-			inq.style.display = "none";
+			v.parentNode.insertBefore(j, v);
+			v.parentNode.removeChild(v);
+			v = j;
 		}
 		inq.appendChild(tx);
 		inq.appendChild(inp);
-		divs[i].insertBefore(inq, divs[i].firstChild);
-		divs[i].removeAttribute("href");
-	}
-	divs = document.getElementsByClassName("page-content")[0]
-	if (divs) {
-		divs = document.getElementsByClassName("page-content")[0].getElementsByTagName("label");
-		i = divs.length;
-		while (i--) {
-			divs[i].setAttribute("style", "display:none");
-		}
-	}
+		v.insertBefore(inq, v.firstChild);
+		v.removeAttribute("href");
+	});
 }
 
 function hitomi_link(event) {

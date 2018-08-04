@@ -823,7 +823,7 @@ var extension = {
 		}
 		else {
 			e.preventDefault();
-      extension.bmkedit(this);
+			extension.bmkedit(this);
 		}
 	},
 
