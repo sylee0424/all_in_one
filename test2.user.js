@@ -11,40 +11,16 @@ function hitomi() {
 	var exclude =  Array.prototype.slice.call(document.querySelectorAll(".page-container>*>*>a,div>a,a[href='/']"));
 	list.forEach(function (v,i,arr) {
 		var k = v.href;
+		var j = {};
+		v.removeAttribute("href");
 		v.dataset.url = k;
 		v.dataset.type = "normal";
 		v.dataset.index = i;
 		v.addEventListener("click", hitomi_link);
-		var l = extension.iptnds({
-			tag:"label",
-			classname:["__extension"],
-			childs:[{
-				tag:"span",
-				classname:["__extension"],
-				name:"N"
-			},
-			{
-				tag:"div",
-				classname:["__checkbox"],
-				id:"input-"+i,
-				events:[{
-					name:"click",
-					value:extension.toggle
-				}]
-			}],
-			events:[{
-				name:"click",
-				value:extension.stopprop
-			}],
-			target:v,
-			insert:v.firstChild
-		});
-		var j = {};
-		v.removeAttribute("href");
 		if (exclude.indexOf(v)!=-1) {
-			l.classList.add("__hided");
 			j.name = "";
 			j.type = "normal";
+			return undefined;
 		}
 		else if (k.match("galleries")) {
 			j.name = "(R) ";
@@ -54,7 +30,7 @@ function hitomi() {
 			j.name = "(K) ";
 			j.type = "korean";
 		}
-		j = extension.iptnds({
+		extension.iptnds({
 			tag:"span",
 			classname:[(j.name?"__extension":"__hided")],
 			name:j.name,
@@ -73,6 +49,35 @@ function hitomi() {
 			events:[{
 				name:"click",
 				value:hitomi_link
+			}],
+			target:v,
+			insert:v.firstChild
+		});
+		extension.iptnds({
+			tag:"label",
+			classname:[(j.name?"__extension":"__hided")],
+			childs:[{
+				tag:"#text",
+				name:"N"
+			},
+			{
+				tag:"div",
+				classname:["__checkbox"],
+				id:"input-"+i,
+				/*events:[{
+					name:"click",
+					value:extension.toggle
+				}]*/
+			}],
+			events:[{
+				name:"click",
+				value:extension.stopprop
+			},
+			{
+				name:"click",
+				value:function (e) {
+					extension.toggle.call(this.lastChild,e);
+				}
 			}],
 			target:v,
 			insert:v.firstChild
@@ -96,7 +101,7 @@ function hitomi_link(event) {
 	} else if (j == "reader") {
 		url += k.split("galleries")[0] + "reader" + k.split("galleries")[1] + "#1";
 	}
-	if (document.getElementById("input-" + i).classList.contains("__checked")) {
+	if (document.getElementById("input-" + i)&&document.getElementById("input-" + i).classList.contains("__checked")) {
 		window.open(url)
 	}
 	else {

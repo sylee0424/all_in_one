@@ -1236,6 +1236,10 @@ var extension = {
 		}
 		if (item.childs) {
 			for (i = 0; i < item.childs.length; i++) {
+				if (item.childs[i].tag=="#text") {
+					div.appendChild(document.createTextNode(item.childs[i].name));
+					continue;
+				}
 				item.childs[i].target = div;
 				extension.iptnds(item.childs[i]);
 			}
