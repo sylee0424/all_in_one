@@ -7,8 +7,7 @@
 
 function hitomi() {
 	var d = 0;
-	var list = document.querySelectorAll("a[href]");
-	var exclude =  Array.prototype.slice.call(document.querySelectorAll(".page-container>*>*>a,div>a,a[href='/']"));
+	var list = document.querySelectorAll(":not(.page-container)>*>*:not(div):not(.rss-icon)>a[href]");
 	list.forEach(function (v,i,arr) {
 		var k = v.href;
 		var j = {};
@@ -17,12 +16,7 @@ function hitomi() {
 		v.dataset.type = "normal";
 		v.dataset.index = i;
 		v.addEventListener("click", hitomi_link);
-		if (exclude.indexOf(v)!=-1) {
-			j.name = "";
-			j.type = "normal";
-			return undefined;
-		}
-		else if (k.match("galleries")) {
+		if (k.match("galleries")) {
 			j.name = "(R) ";
 			j.type = "reader";
 		}
@@ -32,7 +26,7 @@ function hitomi() {
 		}
 		extension.iptnds({
 			tag:"span",
-			classname:[(j.name?"__extension":"__hided")],
+			classname:["__extension"],
 			name:j.name,
 			data:[{
 				name:"url",
@@ -55,7 +49,7 @@ function hitomi() {
 		});
 		extension.iptnds({
 			tag:"label",
-			classname:[(j.name?"__extension":"__hided")],
+			classname:["__extension"],
 			childs:[{
 				tag:"#text",
 				name:"N"
@@ -63,11 +57,7 @@ function hitomi() {
 			{
 				tag:"div",
 				classname:["__checkbox"],
-				id:"input-"+i,
-				/*events:[{
-					name:"click",
-					value:extension.toggle
-				}]*/
+				id:"input-"+i
 			}],
 			events:[{
 				name:"click",
