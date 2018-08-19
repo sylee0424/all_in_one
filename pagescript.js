@@ -1,12 +1,4 @@
-﻿if (location.href.match(/^https?\:\/\/hitomi\.la/i)) {
-	//Extension_Sub_Functions.hitomi_Link_Change.f();
-}
-
-if (location.href.match(/^https?\:\/\/(m|www|bbs)\.ruliweb/i)) {
-	Extension_Sub_Functions.Ruliweb_Ad_Block.f();
-}
-
-if (location.href.match(/^https?\:\/\/(marumaru|wasabisyrup)\.(in|com)/i)) {
+﻿if (location.href.match(/^https?\:\/\/(marumaru|wasabisyrup)\.(in|com)/i)) {
 	Extension_Sub_Functions.Marumaru_Ad_Block.f();
 }
 
