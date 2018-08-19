@@ -1,4 +1,4 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name            Sample extension
 // @author          psydel
 // @description     This is a sample extension.
@@ -1202,6 +1202,21 @@ var extension = {
 	stopprop: function (e) {
 		e.stopPropagation(); 
 		return false;
+	},
+
+	external: function (e) {
+		var url = prompt();
+		var req = new XMLHttpRequest();
+		req.open('GET',url,true);
+		req.onreadystatechange = function (aEvt) {
+			if (req.readyState == 4&&req.status == 200) {
+				extension.bmkaction({
+					"bmk":JSON.parse(req.responseText),
+					"type":"setbmk"
+				},"*");
+			}
+		};
+		req.send(null);
 	},
 
 	iptnds: function (item) {
