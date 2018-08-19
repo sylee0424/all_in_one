@@ -39,7 +39,7 @@
 function importbmk() {
 	try {
 		var req = new XMLHttpRequest();
-		req.open('GET', "https://psydel.000webhostapp.com/",true);
+		req.open('GET', "https://home.psydel.com/",true);
 		req.onreadystatechange = function (aEvt) {
 			if (req.readyState == 4&&req.status == 200) {
 				extension.storage.local.set({"bmks":escape(req.responseText)});
@@ -67,7 +67,7 @@ function listener() {
 			extension.storage.local.get("bmks",function (c) {
 				if (c.bmks) {
 					var req = new XMLHttpRequest();
-					req.open('POST', "https://psydel.000webhostapp.com/",true);
+					req.open('POST', "https://home.psydel.com/",true);
 					req.onreadystatechange = function (aEvt) {
 						if (req.readyState == 4&&req.status == 200) {
 							notify(req.responseText);

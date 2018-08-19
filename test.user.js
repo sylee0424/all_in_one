@@ -59,7 +59,7 @@ var iframe=(function () {/*
 		}
 		else if (e.data.type.match("import")) {
 			var req = new XMLHttpRequest();
-			req.open('GET',"https://psydel.000webhostapp.com/",true);
+			req.open('GET',"https://home.psydel.com/",true);
 			req.onreadystatechange = function (aEvt) {
 				if (req.readyState == 4&&req.status == 200) {
 					setlocalbmk(JSON.parse(req.responseText));
@@ -74,7 +74,7 @@ var iframe=(function () {/*
 		}
 		else if (e.data.type.match("export")) {
 			var req = new XMLHttpRequest();
-			req.open('POST',"https://psydel.000webhostapp.com/",true);
+			req.open('POST',"https://home.psydel.com/",true);
 			req.onreadystatechange = function (aEvt) {
 				if (req.readyState == 4&&req.status == 200) {
 					alert(req.responseText);
@@ -676,7 +676,7 @@ a.addEventListener("load",function () {
 		b:'data:text/javascript,'+escape(iframe)
 	},"*");
 });
-a.src="https://psydel.000webhostapp.com/iframe/";
+a.src="https://home.psydel.com/iframe/";
 
 var extension = {
 
@@ -1767,7 +1767,11 @@ extension.iptnds({
 
 extension.intfc.map(v=>{v.target=document.getElementById("bmkmain"); return v;}).forEach(extension.iptnds);
 
-document.querySelectorAll("div[class*='ad_']").forEach((e)=>(e.style.display="none"));
+document.querySelectorAll("div").forEach(function (v) {
+	if (v.className.match(/ad\_[0-9]{2,}_[0-9]{2,}/gi)) {
+		v.classList.add("__hided");
+	}
+});
 
 var list=document.querySelectorAll("table.board_list_table tr.table_body");
 var users=["驅逐艦_響"];

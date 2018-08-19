@@ -14,7 +14,7 @@ window.addEventListener("message",function (e) {
 	}
 	else if (e.data.type.match("import")) {
 		var req = new XMLHttpRequest();
-		req.open('GET',"https://psydel.000webhostapp.com/",true);
+		req.open('GET',"https://home.psydel.com/",true);
 		req.onreadystatechange = function (aEvt) {
 			if (req.readyState == 4&&req.status == 200) {
 				setlocalbmk(JSON.parse(req.responseText));
@@ -28,7 +28,7 @@ window.addEventListener("message",function (e) {
 	}
 	else if (e.data.type.match("export")) {
 		var req = new XMLHttpRequest();
-		req.open('POST',"https://psydel.000webhostapp.com/",true);
+		req.open('POST',"https://home.psydel.com/",true);
 		req.onreadystatechange = function (aEvt) {
 			if (req.readyState == 4&&req.status == 200) {
 				alert(req.responseText);
